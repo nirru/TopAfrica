@@ -1,0 +1,58 @@
+<resources>
+    <string name="app_name">Top Africa</string>
+    <string name="search_hint">Comapny,Category,Keywords</string>
+    <string name="action_settings">Settings</string>
+    <!--    Permissions    -->
+    <string name="permission_rationale_location">Access to the location service is required to demonstrate the \'my location\' feature, which shows your current location on the map.</string>
+    <string name="location_permission_denied">This sample requires location permission to enable the \'my location\' layer. Please try again and grant access to use the location.\nIf the permission has been permanently denied, it can be enabled from the System Settings &gt; Apps &gt; \'Google Maps API Demos\'.</string>
+    <string name="permission_required_toast">Location permission is required for this demo.</string>
+
+    <!-- TODO:FETCH INTENT ADDRESS -->
+    <string name="no_geocoder_available">No geocoder available</string>
+    <string name="fetch_address">Fetch address</string>
+    <string name="address_found">Address found</string>
+    <string name="no_address_found">Sorry, no address found</string>
+    <string name="no_location_data_provided">No location data provided</string>
+    <string name="service_not_available">Sorry, the service is not available</string>
+    <string name="invalid_lat_long_used">Invalid latitude or longitude used</string>
+    <string name="title_activity_maps">Map</string>
+
+    <string name="dialog_message">It seems that you are not connected to Internet.Please connect your app to Internet.</string>
+    <string name="setting_dialog_title">Use Location Services</string>
+    <string name="setting_dialog_message">Top Africa would like to access your location.</string>
+    <string name="dialog_title">Use Internet Connection</string>
+
+    <string name="agree">AGREE</string>
+    <string name="disagree">DISAGREE</string>
+
+    <string name="check_rate">Check &amp; Rate</string>
+    <string name="create_business">Create Your Business</string>
+
+    <string name="bus_cat_1">Wheather</string>
+    <string name="bus_cat_2">Restaurent</string>
+    <string name="bus_cat_3">Bars</string>
+    <string name="bus_cat_4">Hotel</string>
+    <string name="bus_cat_5">Fuel</string>
+    <string name="bus_cat_6">Parking</string>
+    <string name="bus_cat_7">Pharmacies</string>
+    <string name="bus_cat_8">Hospital</string>
+    <string name="bus_cat_9">Medicines</string>
+    <string name="my_favourite">My Favourite</string>
+    <string name="title_activity_list">ListActivity</string>
+    <string name="title_activity_category">CategoryActivity</string>
+
+    <string name="review">13 Review</string>
+    <string name="open">Open</string>
+    <string name="business_name">Business Name</string>
+    <string name="business_address">Business Address</string>
+    <string name="business_title">Title</string>
+    <string name="business_menu">Menu</string>
+    <string name="business_review">Review</string>
+    <string name="business_text_open">Open</string>
+    <string name="business_offer_key">Coupan</string>
+    <string name="business_offer_value">30 Percent OFF</string>
+
+    <string name="intro">Welcom to Top Africa where You can search and list your business .</string>
+
+    <string name="filter">Filter</string>
+</resources>

@@ -1,0 +1,22 @@
+<resources>
+
+    <!-- Base application theme. -->
+    <style name="AppTheme.NoActionBar">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+        <item name="android:windowDrawsSystemBarBackgrounds">true</item>
+    </style>
+
+    <style name="SearchViewTheme">
+        <item name="colorControlActivated">@color/gray_500</item>
+        <item name="colorControlNormal">@color/gray_500</item>
+        <item name="android:inputType">textCapSentences</item>
+        <item name="android:searchIcon">@drawable/vector_drawable_ic_action_search</item>
+        <item name="android:closeIcon">@drawable/vector_drawable_ic_close_white</item>
+        <item name="queryBackground">@android:color/transparent</item>
+        <item name="submitBackground">@android:color/transparent</item>
+        <item name="android:textSize">14sp</item>
+    </style>
+
+
+</resources>

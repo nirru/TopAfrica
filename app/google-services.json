@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "317328080233",
+    "firebase_url": "https://top-africa.firebaseio.com",
+    "project_id": "top-africa",
+    "storage_bucket": "top-africa.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:317328080233:android:bdfb8eabe7264be9",
+        "android_client_info": {
+          "package_name": "net.topafrica.Annuaire"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "317328080233-jq9f0j8o4n2mi7h6f9v2p6772hkk4ssv.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDmSw7avOAujLEd2hn2pWqrav2QPc3XqoY"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

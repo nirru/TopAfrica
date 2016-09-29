@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
+    tools:context="net.topafrica.Annuaire.activity.CategoryActivity">
+
+    <android.support.design.widget.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/app_bar_height">
+
+        <android.support.design.widget.CollapsingToolbarLayout
+            android:id="@+id/collapsingToolbarLayout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:expandedTitleTextAppearance="@android:color/transparent"
+            app:titleEnabled="false"
+            app:contentScrim="?attr/colorPrimary"
+            app:layout_scrollFlags="scroll|exitUntilCollapsed">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:paddingLeft="@dimen/activity_vertical_margin"
+                android:paddingRight="@dimen/activity_vertical_margin"
+                app:layout_collapseParallaxMultiplier="1.0"
+                android:layout_marginTop="?attr/actionBarSize">
+
+                <android.support.v7.widget.SearchView
+                    android:id="@id/id_search_view"
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:focusable="false"
+                    android:background="@drawable/search_background"
+                    android:textSize="4sp"
+                    app:theme="@style/SearchViewTheme">
+                </android.support.v7.widget.SearchView>
+
+                <android.support.v7.widget.AppCompatAutoCompleteTextView
+                    android:id="@id/id_search_location"
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:hint="Enter your location"
+                    android:layout_below="@id/id_search_view"
+                    android:drawableRight="@drawable/vector_drawable_ic_navigation_black___px"
+                    android:layout_marginTop="@dimen/activity_vertical_margin"
+                    android:gravity="center_vertical"
+                    android:paddingRight="16dp"
+                    android:paddingLeft="16dp"
+                    android:singleLine="true"
+                    android:textSize="14sp"
+                    app:theme="@style/DropDownListViewStyle"
+                    android:background="@drawable/search_background"/>
+
+                <View
+                    android:id="@id/id_seperator"
+                    android:layout_width="@dimen/activity_horizontal_margin"
+                    android:layout_height="10dp"
+                    android:layout_centerHorizontal="true"
+                    android:layout_below="@id/id_search_location"
+                    android:background="@android:color/transparent"/>
+
+                <TextView
+                    android:id="@id/id_check_rate"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/business_card_height"
+                    android:text="@string/check_rate"
+                    android:textSize="12sp"
+                    android:layout_marginTop="@dimen/activity_vertical_margin"
+                    android:layout_toLeftOf="@id/id_seperator"
+                    android:layout_below="@id/id_search_location"
+                    android:layout_gravity="center"
+                    android:background="@drawable/card_background"
+                    android:gravity="center"/>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/business_card_height"
+                    android:text="@string/create_business"
+                    android:textSize="12sp"
+                    android:layout_marginTop="@dimen/activity_vertical_margin"
+                    android:layout_below="@id/id_search_location"
+                    android:layout_toRightOf="@id/id_seperator"
+                    android:layout_gravity="center"
+                    android:background="@drawable/card_background"
+                    android:gravity="center"/>
+
+            </RelativeLayout>
+
+            <include
+                android:id="@+id/toolbar"
+                layout="@layout/view_common_toolbar" />
+
+        </android.support.design.widget.CollapsingToolbarLayout>
+
+
+    </android.support.design.widget.AppBarLayout>
+
+    <include layout="@layout/content_landing" />
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/fab"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:visibility="gone"
+        android:layout_margin="@dimen/fab_margin"
+        app:srcCompat="@android:drawable/ic_dialog_email" />
+
+</android.support.design.widget.CoordinatorLayout>

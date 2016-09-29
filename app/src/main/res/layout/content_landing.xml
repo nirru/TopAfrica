@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v4.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <include
+            android:id="@id/id_business_card_1"
+            android:layout_width="@dimen/business_card_width"
+            android:layout_height="@dimen/business_card_width"
+            
+            layout="@layout/business_card_1"
+            android:layout_alignParentStart="true"/>
+
+        <include
+            android:id="@id/id_business_card_2"
+            android:layout_width="@dimen/business_card_width"
+            android:layout_height="@dimen/business_card_width"
+            layout="@layout/business_card_2"
+            android:layout_centerHorizontal="true"/>
+
+        <include
+            android:id="@id/id_business_card_3"
+            android:layout_width="@dimen/business_card_width"
+            android:layout_height="@dimen/business_card_width"
+            layout="@layout/business_card_3"
+            android:layout_alignParentEnd="true"/>
+
+        <include
+            android:id="@id/id_business_card_4"
+            android:layout_width="@dimen/business_card_width"
+            android:layout_height="@dimen/business_card_width"
+            layout="@layout/business_card_4"
+            android:layout_marginTop="5dp"
+            android:layout_alignParentStart="true"
+            android:layout_below="@id/id_business_card_1"/>
+
+        <include
+            android:id="@id/id_business_card_5"
+            android:layout_width="@dimen/business_card_width"
+            android:layout_height="@dimen/business_card_width"
+            layout="@layout/business_card_5"
+            android:layout_marginTop="5dp"
+            android:layout_centerHorizontal="true"
+            android:layout_below="@id/id_business_card_2"/>
+
+        <include
+            android:id="@id/id_business_card_6"
+            android:layout_width="@dimen/business_card_width"
+            android:layout_height="@dimen/business_card_width"
+            layout="@layout/business_card_6"
+            android:layout_marginTop="5dp"
+            android:layout_alignParentEnd="true"
+            android:layout_below="@id/id_business_card_3"/>
+
+        <include
+            android:id="@id/id_business_card_7"
+            android:layout_width="@dimen/business_card_width"
+            android:layout_height="@dimen/business_card_width"
+            layout="@layout/business_card_7"
+            android:layout_marginTop="5dp"
+            android:layout_alignParentStart="true"
+            android:layout_below="@id/id_business_card_4"/>
+
+        <include
+            android:id="@id/id_business_card_8"
+            android:layout_width="@dimen/business_card_width"
+            android:layout_height="@dimen/business_card_width"
+            layout="@layout/business_card_8"
+            android:layout_marginTop="5dp"
+            android:layout_centerHorizontal="true"
+            android:layout_below="@id/id_business_card_5"/>
+
+        <include
+            android:id="@id/id_business_card_9"
+            android:layout_width="@dimen/business_card_width"
+            android:layout_height="@dimen/business_card_width"
+            layout="@layout/business_card_9"
+            android:layout_marginTop="5dp"
+            android:layout_alignParentEnd="true"
+            android:layout_below="@id/id_business_card_6"/>
+
+        <TextView
+            android:id="@id/id_favourite_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/my_favourite"
+            android:layout_marginTop="@dimen/activity_vertical_margin"
+            android:layout_below="@id/id_business_card_9"/>
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@id/id_recyleview"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            app:layoutManager="LinearLayoutManager"
+            tools:listitem="@layout/favourite_card"
+            android:layout_below="@id/id_favourite_text"/>
+
+    </RelativeLayout>
+
+</android.support.v4.widget.NestedScrollView>

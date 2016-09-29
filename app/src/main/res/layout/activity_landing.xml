@@ -1,0 +1,254 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@color/window_background"
+    tools:context=".activity.LandingActivity">
+
+    <include
+        android:id="@+id/toolbar"
+        layout="@layout/view_common_toolbar" />
+
+            <RelativeLayout
+                android:id="@id/relative"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingLeft="@dimen/activity_vertical_margin"
+                android:paddingRight="@dimen/activity_vertical_margin"
+                android:paddingTop="10dp"
+                android:paddingBottom="10dp"
+                android:focusable="true"
+                android:layout_below="@+id/toolbar"
+                android:focusableInTouchMode="true"
+                android:background="@color/colorPrimary">
+
+                <android.support.v7.widget.SearchView
+                    android:id="@id/id_search_view"
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:background="@drawable/search_background"
+                    android:textSize="4sp"
+                    app:theme="@style/SearchViewTheme">
+                </android.support.v7.widget.SearchView>
+
+                <android.support.v7.widget.AppCompatAutoCompleteTextView
+                    android:id="@id/id_search_location"
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:hint="Enter your location"
+                    android:layout_below="@id/id_search_view"
+                    android:drawableRight="@drawable/vector_drawable_ic_navigation_black___px"
+                    android:layout_marginTop="@dimen/activity_vertical_margin"
+                    android:gravity="center_vertical"
+                    android:paddingRight="16dp"
+                    android:paddingLeft="16dp"
+                    android:lines="1"
+                    android:maxLines="1"
+                    android:textSize="14sp"
+                    app:theme="@style/DropDownListViewStyle"
+                    android:background="@drawable/search_background"/>
+
+            </RelativeLayout>
+
+
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/relative">
+
+        <ScrollView
+            android:id="@id/id_scroll_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:alpha="1.0"
+            android:scrollbars="none">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingLeft="@dimen/activity_vertical_margin"
+                android:paddingRight="@dimen/activity_vertical_margin"
+                android:paddingTop="5dp"
+                android:layout_below="@id/relative">
+
+                <View
+                    android:id="@id/id_seperator"
+                    android:layout_width="@dimen/activity_horizontal_margin"
+                    android:layout_height="10dp"
+                    android:layout_centerHorizontal="true"
+                    android:background="@android:color/transparent"/>
+
+                <TextView
+                    android:id="@id/id_check_rate"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/business_card_height"
+                    android:text="@string/check_rate"
+                    android:textSize="12sp"
+                    android:layout_marginTop="@dimen/activity_vertical_margin"
+                    android:layout_toLeftOf="@id/id_seperator"
+                    android:layout_gravity="center"
+                    android:background="@drawable/card_background"
+                    android:gravity="center"/>
+
+                <TextView
+                    android:id="@id/id_create_business"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/business_card_height"
+                    android:text="@string/create_business"
+                    android:textSize="12sp"
+                    android:layout_marginTop="@dimen/activity_vertical_margin"
+                    android:layout_toRightOf="@id/id_seperator"
+                    android:layout_gravity="center"
+                    android:background="@drawable/card_background"
+                    android:gravity="center"/>
+
+                <include
+                    android:id="@id/id_business_card_1"
+                    android:layout_width="@dimen/business_card_width"
+                    android:layout_height="@dimen/business_card_width"
+                    layout="@layout/business_card_1"
+                    android:layout_below="@id/id_create_business"
+                    android:layout_marginTop="@dimen/activity_vertical_margin"
+                    android:layout_alignParentStart="true"/>
+
+                <include
+                    android:id="@id/id_business_card_2"
+                    android:layout_width="@dimen/business_card_width"
+                    android:layout_height="@dimen/business_card_width"
+                    layout="@layout/business_card_2"
+                    android:layout_below="@id/id_create_business"
+                    android:layout_marginTop="@dimen/activity_vertical_margin"
+                    android:layout_centerHorizontal="true"/>
+
+                <include
+                    android:id="@id/id_business_card_3"
+                    android:layout_width="@dimen/business_card_width"
+                    android:layout_height="@dimen/business_card_width"
+                    layout="@layout/business_card_3"
+                    android:layout_below="@id/id_create_business"
+                    android:layout_marginTop="@dimen/activity_vertical_margin"
+                    android:layout_alignParentEnd="true"/>
+
+                <include
+                    android:id="@id/id_business_card_4"
+                    android:layout_width="@dimen/business_card_width"
+                    android:layout_height="@dimen/business_card_width"
+                    layout="@layout/business_card_4"
+                    android:layout_marginTop="5dp"
+                    android:layout_alignParentStart="true"
+                    android:layout_below="@id/id_business_card_1"/>
+
+                <include
+                    android:id="@id/id_business_card_5"
+                    android:layout_width="@dimen/business_card_width"
+                    android:layout_height="@dimen/business_card_width"
+                    layout="@layout/business_card_5"
+                    android:layout_marginTop="5dp"
+                    android:layout_centerHorizontal="true"
+                    android:layout_below="@id/id_business_card_2"/>
+
+                <include
+                    android:id="@id/id_business_card_6"
+                    android:layout_width="@dimen/business_card_width"
+                    android:layout_height="@dimen/business_card_width"
+                    layout="@layout/business_card_6"
+                    android:layout_marginTop="5dp"
+                    android:layout_alignParentEnd="true"
+                    android:layout_below="@id/id_business_card_3"/>
+
+                <include
+                    android:id="@id/id_business_card_7"
+                    android:layout_width="@dimen/business_card_width"
+                    android:layout_height="@dimen/business_card_width"
+                    layout="@layout/business_card_7"
+                    android:layout_marginTop="5dp"
+                    android:layout_alignParentStart="true"
+                    android:layout_below="@id/id_business_card_4"/>
+
+                <include
+                    android:id="@id/id_business_card_8"
+                    android:layout_width="@dimen/business_card_width"
+                    android:layout_height="@dimen/business_card_width"
+                    layout="@layout/business_card_8"
+                    android:layout_marginTop="5dp"
+                    android:layout_centerHorizontal="true"
+                    android:layout_below="@id/id_business_card_5"/>
+
+                <include
+                    android:id="@id/id_business_card_9"
+                    android:layout_width="@dimen/business_card_width"
+                    android:layout_height="@dimen/business_card_width"
+                    layout="@layout/business_card_9"
+                    android:layout_marginTop="5dp"
+                    android:layout_alignParentEnd="true"
+                    android:layout_below="@id/id_business_card_6"/>
+
+                <TextView
+                    android:id="@id/id_favourite_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/my_favourite"
+                    android:layout_marginTop="@dimen/activity_vertical_margin"
+                    android:layout_below="@id/id_business_card_9"/>
+
+                <android.support.v7.widget.RecyclerView
+                    android:id="@id/id_recyleview"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/recyle_view_height"
+                    android:layout_marginTop="10dp"
+                    app:layoutManager="LinearLayoutManager"
+                    tools:listitem="@layout/favourite_card"
+                    android:layout_below="@id/id_favourite_text"/>
+
+            </RelativeLayout>
+
+        </ScrollView>
+
+        <RelativeLayout
+            android:id="@id/id_recyle_relative"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="gone"
+            android:paddingRight="@dimen/activity_vertical_margin"
+            android:paddingLeft="@dimen/activity_vertical_margin">
+
+            <TextView
+                android:id="@id/id_filter"
+                android:layout_width="75dp"
+                android:layout_height="30dp"
+                android:text="@string/filter"
+                android:textSize="11sp"
+                android:layout_marginTop="@dimen/activity_vertical_margin"
+                android:layout_alignParentEnd="true"
+                android:layout_gravity="center"
+                android:background="@drawable/card_background"
+                android:gravity="center"/>
+
+
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@id/id_recyleview_category"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/activity_vertical_margin"
+                android:clipToPadding="false"
+                android:layout_below="@id/id_filter">
+
+            </android.support.v7.widget.RecyclerView>
+        </RelativeLayout>
+
+
+
+    </FrameLayout>
+
+
+
+
+
+
+
+
+</RelativeLayout>
