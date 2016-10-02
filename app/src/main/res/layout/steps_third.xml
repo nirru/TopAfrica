@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingTop="10dp"
+    android:weightSum="4">
+
+    <TextView
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="Step1"
+        android:padding="7dp"
+        android:background="@drawable/steps_accent_drawable"
+        android:textColor="@android:color/white"
+        android:gravity="center"
+        android:textSize="12sp"
+        android:layout_weight="1"/>
+
+    <TextView
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:background="@drawable/steps_accent_drawable"
+        android:textColor="@android:color/white"
+        android:padding="7dp"
+        android:text="Step2"
+        android:gravity="center"
+        android:textSize="12sp"
+        android:layout_weight="1"/>
+
+    <TextView
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:background="@drawable/steps_accent_drawable"
+        android:textColor="@android:color/white"
+        android:padding="7dp"
+        android:text="Step3"
+        android:gravity="center"
+        android:textSize="12sp"
+        android:layout_weight="1"/>
+
+    <TextView
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:background="@drawable/steps_drawable"
+        android:padding="7dp"
+        android:text="Step4"
+        android:gravity="center"
+        android:textSize="12sp"
+        android:layout_weight="1"/>
+
+</LinearLayout>

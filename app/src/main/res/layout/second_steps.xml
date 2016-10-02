@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:paddingLeft="@dimen/activity_vertical_margin"
+    android:paddingRight="@dimen/activity_vertical_margin"
+    android:paddingTop="10dp"
+    android:paddingBottom="10dp">
+
+        <include
+            android:id="@id/id_include_steps"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            layout="@layout/steps_second"/>
+
+    <android.support.v7.widget.SearchView
+        android:id="@id/id_search_view"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:background="@drawable/search_background"
+        android:textSize="4sp"
+        app:theme="@style/SearchViewTheme"
+        android:layout_below="@id/id_include_steps"
+        android:layout_marginTop="16dp">
+    </android.support.v7.widget.SearchView>
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@id/id_recyleview"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/id_search_view"
+        android:layout_above="@id/id_prev_btn"
+        android:clipToPadding="false"
+        android:layout_marginTop="@dimen/activity_vertical_margin">
+
+    </android.support.v7.widget.RecyclerView>
+
+
+   <TextView
+       android:id="@id/id_seperator"
+       android:layout_width="16dp"
+       android:layout_height="1dp"
+       android:visibility="invisible"
+       android:layout_alignParentBottom="true"
+       android:layout_centerHorizontal="true">
+   </TextView>
+
+    <android.support.v7.widget.AppCompatButton
+        android:id="@id/id_prev_btn_steps_two"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_toLeftOf="@id/id_seperator"
+        android:text="@string/prv_btn"
+        android:textSize="12sp"
+        android:layout_alignParentBottom="true"/>
+
+    <android.support.v7.widget.AppCompatButton
+        android:id="@id/id_next_btn_steps_two"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@id/id_seperator"
+        android:text="@string/next_btn"
+        android:textSize="12sp"
+        android:layout_alignParentBottom="true"/>
+
+</RelativeLayout>

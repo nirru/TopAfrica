@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/activity_create_business"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="net.topafrica.Annuaire.activity.createbusiness.CreateBusiness">
+
+
+    <include
+        android:id="@+id/toolbar"
+        layout="@layout/view_common_toolbar" />
+
+    <include
+        android:id="@id/id_include_1"
+        android:layout_below="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="visible"
+        layout="@layout/first_step"/>
+
+    <include
+        android:id="@id/id_include_2"
+        android:layout_below="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone"
+        layout="@layout/second_steps"/>
+
+    <include
+        android:id="@id/id_include_3"
+        android:layout_below="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone"
+        layout="@layout/third_steps">
+    </include>
+
+    <include
+        android:id="@id/id_include_4"
+        android:layout_below="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone"
+        layout="@layout/fourth_steps">
+    </include>
+
+</RelativeLayout>

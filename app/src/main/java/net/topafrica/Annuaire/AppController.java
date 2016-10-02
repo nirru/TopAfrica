@@ -13,6 +13,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 
 import com.firebase.client.Firebase;
+import com.google.firebase.FirebaseApp;
 
 /**
  * Created by ericbasendra on 16/09/16.
@@ -24,6 +25,7 @@ public class AppController extends Application{
     public void onCreate() {
         super.onCreate();
         mInstance = this;
+        FirebaseApp.initializeApp(this);
         Firebase.setAndroidContext(this);
     }
 

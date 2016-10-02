@@ -127,7 +127,13 @@ public class BaseDrawerActivity extends BaseActivity {
                 supportInvalidateOptionsMenu();
             }
         };
-        drawerLayout.setDrawerListener(mDrawerToggle);
+        try {
+            drawerLayout.addDrawerListener(mDrawerToggle);
+            mDrawerToggle.syncState();
+        }catch (Exception ex){
+            ex.printStackTrace();
+
+        }
 
     }
 

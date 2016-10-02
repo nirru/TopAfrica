@@ -1,28 +1,24 @@
 package net.topafrica.Annuaire.adapter;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v7.widget.AppCompatRatingBar;
+import android.support.v7.widget.AppCompatCheckBox;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.Animation;
-import android.view.animation.ScaleAnimation;
-import android.widget.ImageView;
+import android.widget.CheckBox;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 
-import com.google.android.gms.maps.model.LatLng;
-import com.squareup.picasso.Picasso;
-
-import net.topafrica.Annuaire.GeoSearchModel;
 import net.topafrica.Annuaire.R;
-import net.topafrica.Annuaire.modal.category.Businesse;
+import net.topafrica.Annuaire.modal.category.Category;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -31,19 +27,30 @@ import butterknife.ButterKnife;
 /**
  * Created by ericbasendra on 02/12/15.
  */
-public class CategoryListAdapter<T> extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
+public class CategoryAdapter<T> extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private final int VIEW_ITEM = 1;
     private final int VIEW_PROG = 0;
     private Context mContext;
     public List<T> dataSet;
+    public List<T> filteredProductList;
     private static MyClickListener myClickListener;
+    private int mLastPosition = 5;
+    public static Integer SELECTED_POSITION = -1;
 
-    public CategoryListAdapter(List<T> productLists, Context mContext) {
+    public CategoryAdapter(List<T> productLists, Context mContext) {
         this.mContext = mContext;
         this.dataSet = productLists;
+        this.filteredProductList = new ArrayList<>();
     }
     public void setOnItemClickListener(MyClickListener myClickListener) {
         this.myClickListener = myClickListener;
+    }
+    public void addItems(@NonNull List<T> newDataSetItems) {
+        filteredProductList.addAll(newDataSetItems);
+    }
+
+    public void addItems(@NonNull T newDataSetItems) {
+        filteredProductList.add(newDataSetItems);
     }
 
     public void animateTo(List<T> models) {
@@ -109,11 +116,6 @@ public class CategoryListAdapter<T> extends RecyclerView.Adapter<RecyclerView.Vi
         return model;
     }
 
-    public void clearItem(){
-        if (dataSet != null)
-            dataSet.clear();
-    }
-
     public void moveItem(int fromPosition, int toPosition) {
         final T model = dataSet.remove(fromPosition);
         dataSet.add(toPosition, model);
@@ -140,8 +142,8 @@ public class CategoryListAdapter<T> extends RecyclerView.Adapter<RecyclerView.Vi
         if (viewType == VIEW_ITEM){
             View itemView = LayoutInflater.
                     from(parent.getContext()).
-                    inflate(R.layout.item_row, parent, false);
-            vh = new EventViewHolder(itemView);
+                    inflate(R.layout.category_lis_row, parent, false);
+            vh = new ProductViewHolder(itemView);
         }
         else if(viewType == VIEW_PROG){
             View v = LayoutInflater.from(parent.getContext())
@@ -156,22 +158,13 @@ public class CategoryListAdapter<T> extends RecyclerView.Adapter<RecyclerView.Vi
 
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
-        if(holder instanceof EventViewHolder){
-            setFadeAnimation(holder.itemView);
+        if(holder instanceof ProductViewHolder){
             T dataItem = dataSet.get(position);
-            ((EventViewHolder) holder).textView_business_name.setText(((Businesse)dataItem).getName().toString());
-            double lat = ((Businesse)dataItem).getMapdata().getAnnotations().get(0).getLatitude();
-            double lng = ((Businesse)dataItem).getMapdata().getAnnotations().get(0).getLongitude();
-            ((EventViewHolder) holder).textView_business_address.setText(GeoSearchModel.addressByLocation(new LatLng(lat,lng),mContext));
-            ((EventViewHolder) holder).textView_business_title_value.setText(((Businesse)dataItem).getCategory().toString());
-            ((EventViewHolder) holder).textView_business_menu_value.setText("Coming Soon");
-            Picasso.with(mContext)
-                    .load(((Businesse)dataItem).getLogo())
-                    .resize(75,75)
-                    .centerInside()
-                    .placeholder(R.drawable.placeholder)
-                    .error(R.drawable.no_image_available)
-                    .into(((EventViewHolder) holder).imageView_business_image);
+            ((ProductViewHolder) holder).text_category.setText(((Category)dataItem).getCategoryname());
+            if(position==SELECTED_POSITION)
+                ((ProductViewHolder) holder).checkBox.setChecked(true);
+            else
+                ((ProductViewHolder) holder).checkBox.setChecked(false);
         }else{
             ((ProgressViewHolder)holder).progressBar.setIndeterminate(true);
         }
@@ -186,76 +179,58 @@ public class CategoryListAdapter<T> extends RecyclerView.Adapter<RecyclerView.Vi
             return 0;
     }
 
+    public void filter(String charText) {
+        dataSet.clear();
+        if (charText.length() == 0) {
+            dataSet.addAll(filteredProductList);
+        }
+        else
+        {
+            for (T cI : filteredProductList)
+            {
+                if (((Category)cI).getCategoryname().contains(charText))
+                {
+                    dataSet.add(cI);
 
-    private void setFadeAnimation(View view) {
-        ScaleAnimation anim = new ScaleAnimation(0.0f, 1.0f, 0.0f, 1.0f, Animation.RESTART, 0.5f, Animation.RESTART, 0.5f);
-        anim.setDuration(1000);
-        view.startAnimation(anim);
+                }
+            }
+        }
+        notifyDataSetChanged();
     }
 
+    private String parseStringToDouble(String str){
+        double two_decimal;
+        String str_two_decimal = "23.00";
+        try {
+            two_decimal = Double.parseDouble(str); // Make use of autoboxing.  It's also easier to read.
+            str_two_decimal = String.format("%.2f", two_decimal);
+        } catch (NumberFormatException e) {
+            // p did not contain a valid double
+        }
+
+        return str_two_decimal;
+    }
     // Provide a reference to the views for each data item
     // Complex data items may need more than one view per item, and
     // you provide access to all the views for a data item in a view holder
-    public static class EventViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
-          @Nullable
-          @Bind(R.id.id_card_business_name)
-          TextView textView_business_name;
-          @Nullable
-          @Bind(R.id.id_card_business_address)
-          TextView textView_business_address;
-          @Nullable
-          @Bind(R.id.id_card_business_image)
-          ImageView imageView_business_image;
-          @Nullable
-          @Bind(R.id.id_card_business_title_key)
-          TextView textView_business_title_key;
-          @Nullable
-          @Bind(R.id.id_card_business_title_value)
-          TextView textView_business_title_value;
-          @Nullable
-          @Bind(R.id.id_card_business_menu_key)
-          TextView textView_business_menu_key;
-          @Nullable
-          @Bind(R.id.id_card_business_menu_value)
-          TextView textView_business_menu_value;
-          @Nullable
-          @Bind(R.id.id_card_business_offer_image)
-          ImageView imageView_business_offer_image;
-          @Nullable
-          @Bind(R.id.id_card_business_offer_key)
-          TextView textView_business_offer_key;
-          @Nullable
-          @Bind(R.id.id_card_business_offer_value)
-          TextView textView_business_offer_value;
-          @Nullable
-          @Bind(R.id.id_card_business_rating)
-          AppCompatRatingBar ratingView;
-          @Nullable
-          @Bind(R.id.id_card_business_review)
-          TextView textView_business_review;
-          @Nullable
-          @Bind(R.id.id_card_business_text_open)
-          TextView textView_business_text_open;
-        public EventViewHolder(View itemView) {
+    public static class ProductViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
+        @Nullable
+        @Bind(R.id.id_check_box_category)
+        AppCompatCheckBox checkBox;
+        @Nullable
+        @Bind(R.id.id_check_category)
+        TextView text_category;
+        public ProductViewHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
-//            itemView.setOnClickListener(this);
+            checkBox.setOnClickListener(this);
         }
 
         @Override
         public void onClick(View view) {
-            try{
-                if(null != myClickListener){
-                  myClickListener.onItemClick(getLayoutPosition(), view);
-                }else{
-                    Toast.makeText(view.getContext(),"Click Event Null", Toast.LENGTH_SHORT).show();
-                }
-            }catch(NullPointerException e){
-                Toast.makeText(view.getContext(),"Click Event Null Ex", Toast.LENGTH_SHORT).show();
-            }
+            myClickListener.onItemClick(getLayoutPosition(), view);
         }
     }
-
 
     public static class ProgressViewHolder extends RecyclerView.ViewHolder {
         public ProgressBar progressBar;
@@ -264,8 +239,6 @@ public class CategoryListAdapter<T> extends RecyclerView.Adapter<RecyclerView.Vi
             progressBar = (ProgressBar)v.findViewById(R.id.progress_bar);
         }
     }
-
-
     /**
      * y Custom Item Listener
      */
@@ -273,6 +246,4 @@ public class CategoryListAdapter<T> extends RecyclerView.Adapter<RecyclerView.Vi
     public interface MyClickListener {
         public void onItemClick(int position, View v);
     }
-
-
 }

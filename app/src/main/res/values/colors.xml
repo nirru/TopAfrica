@@ -8,4 +8,5 @@
     <color name="gray_500">#9E9E9E</color>
     <color name="yellow_500">#FFEB3B</color>
     <color name="yellow_200">#FFF59D</color>
+    <color name="white">#FFFFFF</color>
 </resources>

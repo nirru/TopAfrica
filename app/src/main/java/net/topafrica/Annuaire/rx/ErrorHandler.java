@@ -14,7 +14,7 @@ public class ErrorHandler implements Action1<Throwable> {
     }
     @Override
     public void call(Throwable throwable) {
-        Toast.makeText(mContext, "Error occurred.", Toast.LENGTH_SHORT).show();
-        Log.d("MainActivity", "Error occurred", throwable);
+//        Toast.makeText(mContext, "Error occurred.", Toast.LENGTH_SHORT).show();
+        Log.e("MainActivity", "Error occurred", throwable);
     }
 }

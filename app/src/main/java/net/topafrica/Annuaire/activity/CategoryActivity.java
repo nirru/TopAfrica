@@ -8,10 +8,9 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
+import android.support.v4.view.ScrollingView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.View;
@@ -27,23 +26,17 @@ import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.firebase.database.DatabaseError;
 
 import net.topafrica.Annuaire.R;
 import net.topafrica.Annuaire.Utils;
 import net.topafrica.Annuaire.adapter.CategoryListAdapter;
 import net.topafrica.Annuaire.common.BaseDrawerActivity;
-import net.topafrica.Annuaire.modal.Businesse;
-import net.topafrica.Annuaire.modal.DummyItem;
+import net.topafrica.Annuaire.modal.category.Businesse;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.Bind;
-import rx.Observable;
-import rx.Subscriber;
-
-import static java.security.AccessController.getContext;
 
 public class CategoryActivity extends BaseDrawerActivity {
 
@@ -121,6 +114,7 @@ public class CategoryActivity extends BaseDrawerActivity {
 //        if (checkPlayServices())
             buildGoogleApiClient();
         setContentView(R.layout.activity_category);
+
 
         if (savedInstanceState == null) {
             pendingIntroAnimation = true;
@@ -262,6 +256,5 @@ public class CategoryActivity extends BaseDrawerActivity {
         }
 
     }
-
 
 }

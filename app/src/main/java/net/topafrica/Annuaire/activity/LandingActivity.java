@@ -51,6 +51,7 @@ import com.jakewharton.rxbinding.support.v7.widget.RxSearchView;
 
 import net.topafrica.Annuaire.GeoSearchModel;
 import net.topafrica.Annuaire.R;
+import net.topafrica.Annuaire.activity.createbusiness.CreateBusiness;
 import net.topafrica.Annuaire.adapter.CategoryListAdapter;
 import net.topafrica.Annuaire.adapter.CategorySearchAdapter;
 import net.topafrica.Annuaire.adapter.FavouriteListAdapter;
@@ -108,8 +109,6 @@ public class LandingActivity extends BaseActivity {
     @Nullable
     @Bind(R.id.id_recyle_relative)
     RelativeLayout relativeRecyleContainer;
-
-
 
     CategorySearchAdapter categorySearchAdapter;
     PlaceSearchAutoAdapter mAdapter;
@@ -247,7 +246,6 @@ public class LandingActivity extends BaseActivity {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
 //                Log.e("" + dataSnapshot.getKey() + " ==","" + dataSnapshot.getValue());
-                TIMESTAMP_KEY = dataSnapshot.getKey();
                 Businesse businesse = dataSnapshot.getValue(Businesse.class);
                 categorySearchAdapter.addItem(businesse);
             }
@@ -441,7 +439,12 @@ public class LandingActivity extends BaseActivity {
       startNextActivity("Shop");
     }
 
-
+    @OnClick(R.id.id_create_business)
+    public void createBusiness(View v){
+        Intent i = new Intent(this, CreateBusiness.class);
+        startActivity(i);
+        overridePendingTransition(R.anim.move_right_in_activity, R.anim.move_left_out_activity);
+    }
     private void startNextActivity(String type){
         Intent i = new Intent(this, CategoryActivity.class);
         i.putExtra(KEY,type);

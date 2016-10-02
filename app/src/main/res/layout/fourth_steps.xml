@@ -1,0 +1,190 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingLeft="@dimen/activity_vertical_margin"
+    android:paddingRight="@dimen/activity_vertical_margin"
+    android:paddingTop="10dp"
+    android:paddingBottom="10dp">
+
+    <include
+            android:id="@id/id_include_steps"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            layout="@layout/steps_fourth"/>
+
+    <RelativeLayout
+        android:id="@id/id_relative"
+        android:layout_width="160dp"
+        android:layout_height="28dp"
+        android:background="@drawable/rounded_layout_drawable"
+        android:layout_below="@id/id_include_steps"
+        android:layout_marginTop="@dimen/activity_vertical_margin"
+        android:layout_centerHorizontal="true">
+
+        <TextView
+            android:id="@id/id_morning_schdule"
+            android:layout_width="80dp"
+            android:layout_height="match_parent"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            android:gravity="center"
+            android:background="@color/colorAccent"
+            android:textColor="@android:color/white"
+            android:text="Morning"
+            android:textSize="12sp"/>
+
+        <TextView
+            android:id="@id/id_evening_schdule"
+            android:layout_width="80dp"
+            android:layout_height="match_parent"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:gravity="center"
+            android:textColor="@color/gray_500"
+            android:background="@android:color/white"
+            android:text="Evening"
+            android:textSize="12sp"/>
+
+    </RelativeLayout>
+
+    <include
+        android:id="@id/id_include_morning"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/id_relative"
+        layout="@layout/morning">
+    </include>
+
+    <include
+        android:id="@id/id_include_evening"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/id_relative"
+        android:visibility="invisible"
+        layout="@layout/evening">
+    </include>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/id_include_morning"
+        android:layout_above="@id/id_next_btn_steps_four"
+        android:layout_marginTop="10dp">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@id/id_text_bus_logo"
+                android:layout_width="wrap_content"
+                android:layout_height="45dp"
+                android:text="@string/upload_logo"
+                android:textSize="12sp"
+                android:paddingTop="5dp"
+                android:gravity="center"
+                android:paddingBottom="5dp"
+                android:layout_alignParentStart="true"/>
+
+
+
+
+            <ImageView
+                android:id="@id/id_image_bus_logo_gallery"
+                android:layout_width="45dp"
+                android:layout_height="45dp"
+                android:scaleType="fitCenter"
+                android:src="@drawable/vector_drawable_ic_linked_camera_white___px"
+                android:layout_alignParentEnd="true"/>
+
+            <TextView
+                android:id="@id/id_text_bus_logo"
+                android:layout_width="wrap_content"
+                android:layout_height="45dp"
+                android:layout_below="@id/id_image_bus_logo_gallery"
+                android:text="@string/upload_picture"
+                android:textSize="12sp"
+                android:paddingTop="5dp"
+                android:paddingBottom="5dp"
+                android:layout_marginTop="10dp"
+                android:gravity="center"
+                android:layout_alignParentStart="true"/>
+
+            <ImageView
+                android:id="@id/id_image_bus_pic_camere"
+                android:layout_width="45dp"
+                android:layout_height="45dp"
+                android:layout_marginTop="10dp"
+                android:scaleType="fitCenter"
+                android:layout_below="@id/id_image_bus_logo_gallery"
+                android:src="@drawable/vector_drawable_ic_linked_camera_white___px"
+                android:layout_alignParentEnd="true"/>
+
+
+
+            <EditText
+                android:id="@id/id_facebook_share"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="10dp"
+                android:layout_marginTop="10dp"
+                android:lines="1"
+                android:hint="Facebook share link"
+                android:textSize="12sp"
+                android:layout_below="@id/id_image_bus_pic_camere"
+                android:background="@drawable/card_background"/>
+
+            <EditText
+                android:id="@id/id_google_share"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="10dp"
+                android:layout_marginTop="10dp"
+                android:lines="1"
+                android:hint="Google share link"
+                android:textSize="12sp"
+                android:layout_below="@id/id_facebook_share"
+                android:background="@drawable/card_background"/>
+
+            <EditText
+                android:id="@id/id_twitter_share"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="10dp"
+                android:layout_marginTop="10dp"
+                android:lines="1"
+                android:hint="Twitter share link"
+                android:textSize="12sp"
+                android:layout_below="@id/id_google_share"
+                android:background="@drawable/card_background"/>
+
+            <EditText
+                android:id="@id/id_instagram_share"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="10dp"
+                android:layout_marginTop="10dp"
+                android:lines="1"
+                android:hint="Instagram share link"
+                android:textSize="12sp"
+                android:layout_below="@id/id_twitter_share"
+                android:background="@drawable/card_background"/>
+
+
+        </RelativeLayout>
+
+
+
+    </ScrollView>
+
+
+    <android.support.v7.widget.AppCompatButton
+        android:id="@id/id_next_btn_steps_four"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/save_btn"
+        android:textSize="12sp"
+        android:layout_alignParentBottom="true"/>
+
+</RelativeLayout>

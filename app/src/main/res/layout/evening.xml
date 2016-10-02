@@ -1,0 +1,292 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingTop="16dp">
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:weightSum="3"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:text="Monday"
+            android:padding="10dp"
+            android:layout_weight="1"
+            android:textSize="12sp"
+            android:background="@drawable/border"
+            android:gravity="center|left"/>
+
+        <TextView
+            android:id="@id/id_even_mon_opn_time"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:hint="Even Time"
+            android:padding="10dp"
+            android:layout_weight="1"
+            android:textSize="12sp"
+            android:background="@drawable/border"
+            android:gravity="center|left"/>
+
+        <TextView
+            android:id="@id/id_even_mon_close_time"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="Closing Time"
+            android:layout_weight="1"
+            android:padding="10dp"
+            android:textSize="12sp"
+            android:background="@drawable/border_rect"
+            android:gravity="center|left"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:weightSum="3"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:text="Tuesday"
+            android:padding="10dp"
+            android:layout_weight="1"
+            android:textSize="12sp"
+            android:background="@drawable/border"
+            android:gravity="center|left"/>
+
+        <TextView
+            android:id="@id/id_even_tue_opn_time"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:hint="Open Time"
+            android:padding="10dp"
+            android:layout_weight="1"
+            android:textSize="12sp"
+            android:background="@drawable/border"
+            android:gravity="center|left"/>
+
+        <TextView
+            android:id="@id/id_even_tue_close_time"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="Closing Time"
+            android:layout_weight="1"
+            android:padding="10dp"
+            android:textSize="12sp"
+            android:background="@drawable/border_rect"
+            android:gravity="center|left"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:weightSum="3"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:text="Wednesday"
+            android:padding="10dp"
+            android:layout_weight="1"
+            android:textSize="12sp"
+            android:background="@drawable/border"
+            android:gravity="center|left"/>
+
+        <TextView
+            android:id="@id/id_even_wed_opn_time"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:hint="Open Time"
+            android:padding="10dp"
+            android:layout_weight="1"
+            android:textSize="12sp"
+            android:background="@drawable/border"
+            android:gravity="center|left"/>
+
+        <TextView
+            android:id="@id/id_even_wed_close_time"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="Closing Time"
+            android:layout_weight="1"
+            android:padding="10dp"
+            android:textSize="12sp"
+            android:background="@drawable/border_rect"
+            android:gravity="center|left"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:weightSum="3"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:text="Thursday"
+            android:padding="10dp"
+            android:layout_weight="1"
+            android:textSize="12sp"
+            android:background="@drawable/border"
+            android:gravity="center|left"/>
+
+        <TextView
+            android:id="@id/id_even_thrus_opn_time"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:hint="Open Time"
+            android:padding="10dp"
+            android:layout_weight="1"
+            android:textSize="12sp"
+            android:background="@drawable/border"
+            android:gravity="center|left"/>
+
+        <TextView
+            android:id="@id/id_even_thrus_close_time"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="Closing Time"
+            android:layout_weight="1"
+            android:padding="10dp"
+            android:textSize="12sp"
+            android:background="@drawable/border_rect"
+            android:gravity="center|left"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:weightSum="3"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:text="Friday"
+            android:padding="10dp"
+            android:layout_weight="1"
+            android:textSize="12sp"
+            android:background="@drawable/border"
+            android:gravity="center|left"/>
+
+        <TextView
+            android:id="@id/id_even_friday_opn_time"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:hint="Open Time"
+            android:padding="10dp"
+            android:layout_weight="1"
+            android:textSize="12sp"
+            android:background="@drawable/border"
+            android:gravity="center|left"/>
+
+        <TextView
+            android:id="@id/id_even_friday_close_time"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="Closing Time"
+            android:layout_weight="1"
+            android:padding="10dp"
+            android:textSize="12sp"
+            android:background="@drawable/border_rect"
+            android:gravity="center|left"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:weightSum="3"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:text="Saturday"
+            android:padding="10dp"
+            android:layout_weight="1"
+            android:textSize="12sp"
+            android:background="@drawable/border"
+            android:gravity="center|left"/>
+
+        <TextView
+            android:id="@id/id_even_sat_opn_time"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:hint="Open Time"
+            android:padding="10dp"
+            android:layout_weight="1"
+            android:textSize="12sp"
+            android:background="@drawable/border"
+            android:gravity="center|left"/>
+
+        <TextView
+            android:id="@id/id_even_sat_close_time"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="Closing Time"
+            android:layout_weight="1"
+            android:padding="10dp"
+            android:textSize="12sp"
+            android:background="@drawable/border_rect"
+            android:gravity="center|left"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:weightSum="3"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:text="Sunday"
+            android:padding="10dp"
+            android:layout_weight="1"
+            android:textSize="12sp"
+            android:background="@drawable/border_bottom"
+            android:gravity="center|left"/>
+
+        <TextView
+            android:id="@id/id_even_sun_opn_time"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:hint="Open Time"
+            android:padding="10dp"
+            android:layout_weight="1"
+            android:textSize="12sp"
+            android:background="@drawable/border_bottom"
+            android:gravity="center|left"/>
+
+        <TextView
+            android:id="@id/id_even_sun_close_time"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="Closing Time"
+            android:layout_weight="1"
+            android:padding="10dp"
+            android:textSize="12sp"
+            android:background="@drawable/border_rect_bottom"
+            android:gravity="center|left"/>
+
+    </LinearLayout>
+
+
+
+
+</LinearLayout>

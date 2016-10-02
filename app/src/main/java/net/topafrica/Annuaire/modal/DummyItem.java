@@ -1,6 +1,5 @@
 package net.topafrica.Annuaire.modal;
 
-
 /**
  * A dummy item representing a piece of content.
  */
