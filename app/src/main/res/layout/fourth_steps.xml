@@ -170,19 +170,33 @@
                 android:textSize="12sp"
                 android:layout_below="@id/id_twitter_share"
                 android:background="@drawable/card_background"/>
-
-
         </RelativeLayout>
-
-
-
     </ScrollView>
 
+
+    <TextView
+        android:id="@id/id_seperator"
+        android:layout_width="16dp"
+        android:layout_height="1dp"
+        android:visibility="invisible"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true">
+    </TextView>
+
+    <android.support.v7.widget.AppCompatButton
+        android:id="@id/id_prev_btn_steps_four"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_toLeftOf="@id/id_seperator"
+        android:text="@string/prv_btn"
+        android:textSize="12sp"
+        android:layout_alignParentBottom="true"/>
 
     <android.support.v7.widget.AppCompatButton
         android:id="@id/id_next_btn_steps_four"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_toRightOf="@id/id_seperator"
         android:text="@string/save_btn"
         android:textSize="12sp"
         android:layout_alignParentBottom="true"/>

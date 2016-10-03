@@ -4,7 +4,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Color;
 import android.location.Address;
 import android.location.Location;
 import android.net.Uri;
@@ -28,10 +27,11 @@ import android.widget.ImageView;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import com.firebase.client.ChildEventListener;
 import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
-import com.firebase.client.FirebaseApp;
 import com.firebase.client.FirebaseError;
 import com.firebase.client.Query;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -39,17 +39,9 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.OnMapReadyCallback;
-import com.google.android.gms.maps.model.BitmapDescriptor;
-import com.google.android.gms.maps.model.BitmapDescriptorFactory;
-import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
-import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.OnPausedListener;
-import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.jakewharton.rxbinding.support.v7.widget.RxSearchView;
@@ -59,27 +51,25 @@ import com.wdullaer.materialdatetimepicker.time.RadialPickerLayout;
 import com.wdullaer.materialdatetimepicker.time.TimePickerDialog;
 
 import net.topafrica.Annuaire.AppConstant;
-import net.topafrica.Annuaire.AppController;
 import net.topafrica.Annuaire.PermissionUtils;
 import net.topafrica.Annuaire.R;
 import net.topafrica.Annuaire.Utils;
 import net.topafrica.Annuaire.ValidationResult;
 import net.topafrica.Annuaire.ValidationUtils;
-import net.topafrica.Annuaire.activity.CategoryActivity;
-import net.topafrica.Annuaire.activity.LandingActivity;
 import net.topafrica.Annuaire.adapter.CategoryAdapter;
-import net.topafrica.Annuaire.adapter.CategorySearchAdapter;
-import net.topafrica.Annuaire.adapter.FavouriteListAdapter;
 import net.topafrica.Annuaire.common.BaseDrawerActivity;
-import net.topafrica.Annuaire.dummy.DummyContent;
+import net.topafrica.Annuaire.modal.category.Annotation;
 import net.topafrica.Annuaire.modal.category.Businesse;
 import net.topafrica.Annuaire.modal.category.Category;
-import net.topafrica.Annuaire.rx.AddressToStringFunc;
+import net.topafrica.Annuaire.modal.category.Day;
+import net.topafrica.Annuaire.modal.category.Mapdata;
+import net.topafrica.Annuaire.modal.category.Openhours;
 import net.topafrica.Annuaire.rx.AddressToStringListFunc;
 import net.topafrica.Annuaire.rx.DisplayAddressOnViewAction;
-import net.topafrica.Annuaire.rx.DisplayTextOnViewAction;
 import net.topafrica.Annuaire.rx.ErrorHandler;
 import net.topafrica.Annuaire.rx.ReverseGeocodeObservable;
+import net.topafrica.Annuaire.rx.firebase.RxFirebaseDatabase;
+import net.topafrica.Annuaire.rx.firebase.RxFirebaseStorage;
 
 import java.io.File;
 import java.io.IOException;
@@ -87,6 +77,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
+import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
 import butterknife.Bind;
@@ -97,7 +88,7 @@ import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.functions.Func1;
-import rx.functions.Func3;
+import rx.functions.Func2;
 import rx.functions.Func5;
 import rx.schedulers.Schedulers;
 
@@ -469,7 +460,7 @@ public class CreateBusiness extends BaseDrawerActivity implements GoogleMap.OnMa
     @Bind(R.id.mapview)
     MapView mapView;
 
-    private Subscription _subscription;
+    private Subscription _subscription,_storage_subscription;
     static List<Category> LIST;
     CategoryAdapter categoryAdapter;
 
@@ -483,6 +474,8 @@ public class CreateBusiness extends BaseDrawerActivity implements GoogleMap.OnMa
     public static final String TAG_SELECT_FILE = "Select File";
     static int i = 0;
     File file;
+    Uri logo_uri = null;
+    Uri pic_uri =  null;
 
     private void selectImage()  {
         final CharSequence[] items = {TAG_CAMERA, TAG_CHOOSE_FROM_LIBRARY,
@@ -577,6 +570,7 @@ public class CreateBusiness extends BaseDrawerActivity implements GoogleMap.OnMa
         if (mapView!=null)
             mapView.onDestroy();
         _subscription.unsubscribe();
+        _storage_subscription.unsubscribe();
     }
 
     @Override
@@ -697,11 +691,17 @@ public class CreateBusiness extends BaseDrawerActivity implements GoogleMap.OnMa
                     if(data!=null){
                         Bitmap photo = (Bitmap) data.getExtras().get("data");
                         file =  Utils.saveImageToExternalStorage(photo);
-                        if (i==1)
-                        setPic(file.getAbsolutePath(),logo_camera_image);
-                        else
+                        if (i==1){
+                            setPic(file.getAbsolutePath(),logo_camera_image);
+                            logo_uri = Uri.fromFile(file);
+                        }
+                        else{
                             setPic(file.getAbsolutePath(),pic_camera_image);
+                            pic_uri = Uri.fromFile(file);
+                        }
+
                         galleryAddPic(file.getAbsolutePath());
+
                     }
                 } catch (Exception e) {
                     // TODO Auto-generated catch block
@@ -716,11 +716,15 @@ public class CreateBusiness extends BaseDrawerActivity implements GoogleMap.OnMa
                 else
                     realPath = Utils.getRealPathFromURI_API19(this, data.getData());
 
-                Log.e("REAL PATH", "" + realPath);
-                if (i==1)
+//                Log.e("REAL PATH", "" + realPath);
+                if (i==1){
+                    logo_uri = data.getData();
                     setPic(realPath,logo_camera_image);
-                else
+                }
+                else{
+                    pic_uri = data.getData();
                     setPic(realPath,pic_camera_image);
+                }
             }
         }
     }
@@ -933,6 +937,7 @@ public class CreateBusiness extends BaseDrawerActivity implements GoogleMap.OnMa
                     }
                 });
 
+
        _subscription = Observable.combineLatest(nameObservable, categoryObservable, emailObservable, phoneObservable, faxObservable, new Func5<Boolean, Boolean, Boolean, Boolean, Boolean, Boolean>() {
            @Override
            public Boolean call(Boolean validName, Boolean validType, Boolean validEmail, Boolean validPhone, Boolean validFax) {
@@ -969,36 +974,107 @@ public class CreateBusiness extends BaseDrawerActivity implements GoogleMap.OnMa
     }
 
     private void uploadFiles(){
-        FirebaseStorage storage = FirebaseStorage.getInstance(com.google.firebase.FirebaseApp.initializeApp(CreateBusiness.this));
-        StorageReference storageRef = storage.getReferenceFromUrl("gs://top-africa.appspot.com");
-        Uri file1 = Uri.fromFile(file);
-        StorageReference riversRef = storageRef.child("images/"+file1.getLastPathSegment());
-        UploadTask uploadTask = riversRef.putFile(file1);
+        final StorageReference storageRef = FirebaseStorage.getInstance().getReferenceFromUrl("gs://top-africa.appspot.com");
 
-// Register observers to listen for when the download is done or if it fails
-        uploadTask.addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception exception) {
-                // Handle unsuccessful uploads
-            }
-        }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-            @Override
-            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                // taskSnapshot.getMetadata() contains file metadata such as size, content-type, and download URL.
-                Uri downloadUrl = taskSnapshot.getDownloadUrl();
-            }
-        }).addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
-            @Override
-            public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
-                double progress = (100.0 * taskSnapshot.getBytesTransferred()) / taskSnapshot.getTotalByteCount();
-                System.out.println("Upload is " + progress + "% done");
-            }
-        }).addOnPausedListener(new OnPausedListener<UploadTask.TaskSnapshot>() {
-            @Override
-            public void onPaused(UploadTask.TaskSnapshot taskSnapshot) {
-                System.out.println("Upload is paused");
-            }
-        });
+        _storage_subscription = RxFirebaseStorage.putFile(storageRef.child("images/"+logo_uri.getLastPathSegment()),logo_uri)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .map(new Func1<UploadTask.TaskSnapshot, UploadTask.TaskSnapshot>() {
+                    @Override
+                    public UploadTask.TaskSnapshot call(UploadTask.TaskSnapshot taskSnapshot) {
+                        System.out.println("LOGO URL is " + taskSnapshot.getDownloadUrl());
+                        return taskSnapshot;
+                    }
+                })
+                .flatMap(new Func1<UploadTask.TaskSnapshot, Observable<UploadTask.TaskSnapshot>>() {
+                    @Override
+                    public Observable<UploadTask.TaskSnapshot > call(UploadTask.TaskSnapshot taskSnapshot) {
+                        return RxFirebaseStorage.putFile(storageRef.child("images/"+pic_uri.getLastPathSegment()),pic_uri);
+                    }
+                })
+                .map(new Func1<UploadTask.TaskSnapshot, UploadTask.TaskSnapshot>() {
+                    @Override
+                    public UploadTask.TaskSnapshot call(UploadTask.TaskSnapshot taskSnapshot) {
+                        System.out.println("PIC URL is " + taskSnapshot.getDownloadUrl());
+                        return taskSnapshot;
+                    }
+                })
+                .subscribe(new Subscriber<UploadTask.TaskSnapshot>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+
+                    }
+
+                    @Override
+                    public void onNext(UploadTask.TaskSnapshot taskSnapshot) {
+                        double progress = (100.0 * taskSnapshot.getBytesTransferred()) / taskSnapshot.getTotalByteCount();
+                        System.out.println("Upload is " + progress + "% done");
+//                        saveDataToFirebaseDatabase();
+                    }
+                });
+    }
+
+    private void saveDataToFirebaseDatabase(){
+        try {
+            ArrayList<String> dfcd = new ArrayList<>();
+            dfcd.add("www.google.com");
+            Firebase ref = new Firebase("https://top-africa.firebaseio.com/businesses");
+//            Firebase busiRefs = ref.child("businesses");
+            Businesse businesse = new Businesse();
+            businesse.setNumberEmployes("50");
+            businesse.setCity("Jaipur");
+            businesse.setCountry("India");
+            businesse.setEmail("nirmalgit@gmail.com");
+            businesse.setListingtype("Profressional");
+            businesse.setName("Nirmal");
+            businesse.setOfficeLocation("22" + "," + "23");
+            businesse.setPictures(dfcd);
+            businesse.setLogo("www.htl.com");
+            businesse.setWebsite("www.goole.com");
+            businesse.setRoad("adsad");
+            businesse.setSuburb("dfcdfcd");
+            List<Annotation> anot = new ArrayList<>();
+            Annotation ss = new Annotation();
+            ss.setLatitude(20.00);
+            ss.setLongitude(25.00);
+            ss.setTitle("MY TEST");
+            anot.add(ss);
+            Mapdata mapdata = new Mapdata();
+            mapdata.setAnnotations(anot);
+            businesse.setMapdata(mapdata);
+            List<Day> daylist = new ArrayList<>();
+            Day day = new Day();
+            day.setDay("MONDAY");
+            day.setOpenAt(147513605);
+            day.setCloseAt(23232325);
+            daylist.add(day);
+            Openhours openhours = new Openhours();
+            openhours.setDays(daylist);
+            openhours.setZone(1);
+            businesse.setOpenhours(openhours);
+            Category ca = new Category();
+            ca.setCategoryname("TEST");
+            ref.push().setValue(businesse, new Firebase.CompletionListener() {
+                @Override
+                public void onComplete(FirebaseError firebaseError, Firebase firebase) {
+                    if (firebaseError != null) {
+                        System.out.println("Data could not be saved. " + firebaseError.getMessage());
+                    } else {
+                        System.out.println("Data saved successfully.");
+                    }
+                }
+            });
+
+        }catch (Exception ex){
+            ex.printStackTrace();
+        }
+
+
     }
     private void enableFirstState(){
         steps_one_view.setVisibility(View.VISIBLE);
@@ -1026,37 +1102,37 @@ public class CreateBusiness extends BaseDrawerActivity implements GoogleMap.OnMa
     }
     @OnClick(R.id.id_next_btn_step_1)
     public void stepFirstNextButtonClick(View v){
-        Log.e("1","" + "sadfd");
         enableSecondstate();
     }
     @OnClick(R.id.id_prev_btn_steps_two)
     public void stepSecondPrevButtonClick(View v){
-        Log.e("2","" + "sadfd");
         enableFirstState();
     }
 
     @OnClick(R.id.id_next_btn_steps_two)
     public void stepSecondNextButtonClick(View v){
-        Log.e("3","" + "sadfd");
         enableThirdState();
     }
 
     @OnClick(R.id.id_prev_btn_steps_three)
     public void stepThirdPrevButtonClick(View v){
-        Log.e("4","" + "sadfd");
         enableSecondstate();
     }
 
     @OnClick(R.id.id_next_btn_steps_three)
     public void stepThirdNextButtonClick(View v){
-        Log.e("ssdd","" + "sadfd");
         enableFourthState();
+    }
+
+    @OnClick(R.id.id_prev_btn_steps_four)
+    public void stepFourthPrevButtonClick(View v){
+        enableThirdState();
     }
 
     @OnClick(R.id.id_next_btn_steps_four)
     public void saveToStorage(View v){
-        Log.e("ssdd","" + "sadfd");
-        uploadFiles();
+//        uploadFiles();
+        saveDataToFirebaseDatabase();
     }
 
 

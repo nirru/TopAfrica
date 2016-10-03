@@ -110,6 +110,7 @@
     <item type="id" name="id_prev_btn_steps_two"/>
     <item type="id" name="id_next_btn_steps_two"/>
     <item type="id" name="id_prev_btn_steps_three"/>
+    <item type="id" name="id_prev_btn_steps_four"/>
     <item type="id" name="id_next_btn_steps_three"/>
     <item type="id" name="id_next_btn_steps_four"/>
     <item type="id" name="id_morning_schdule"/>

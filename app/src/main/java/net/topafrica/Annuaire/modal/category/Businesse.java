@@ -10,6 +10,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+import com.google.firebase.database.IgnoreExtraProperties;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonPropertyOrder({
@@ -31,6 +32,7 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
         "suburb",
         "website"
 })
+@IgnoreExtraProperties
 public class Businesse {
     @JsonProperty("Number_employes")
     private String numberEmployes;
@@ -68,6 +70,11 @@ public class Businesse {
     private String website;
     @JsonIgnore
     private Map<String, Object> additionalProperties = new HashMap<String, Object>();
+
+
+    public Businesse(){
+
+    }
 
     /**
      *

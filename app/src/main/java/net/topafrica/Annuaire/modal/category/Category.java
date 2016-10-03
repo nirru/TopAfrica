@@ -11,6 +11,10 @@ public class Category {
     private String categoryname;
     private boolean isChecked;
 
+    public Category(){
+
+    }
+
     public String getCategoryname() {
         return categoryname;
     }

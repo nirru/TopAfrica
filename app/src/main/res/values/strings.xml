@@ -60,6 +60,7 @@
     <!-- TODO:CREATE BUSINESS SCREEN -->
     <string name="hint_business_name">Business Name</string>
     <string name="hint_business_category">Business Category</string>
+    <string name="hint_business_website">Website</string>
     <string name="hint_business_type_1">Enterprise</string>
     <string name="hint_business_type_2">Professional</string>
     <string name="hint_business_type_3">Personnel</string>

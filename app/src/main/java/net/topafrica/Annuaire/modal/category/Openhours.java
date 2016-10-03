@@ -10,20 +10,25 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+import com.google.firebase.database.IgnoreExtraProperties;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonPropertyOrder({
         "days",
         "zone"
 })
+@IgnoreExtraProperties
 public class Openhours {
-
     @JsonProperty("days")
     private List<Day> days = new ArrayList<Day>();
     @JsonProperty("zone")
     private Integer zone;
     @JsonIgnore
     private Map<String, Object> additionalProperties = new HashMap<String, Object>();
+
+    public Openhours(){
+
+    }
 
     /**
      *
