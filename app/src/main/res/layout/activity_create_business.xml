@@ -11,38 +11,54 @@
         android:id="@+id/toolbar"
         layout="@layout/view_common_toolbar" />
 
-    <include
-        android:id="@id/id_include_1"
-        android:layout_below="@+id/toolbar"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:visibility="visible"
-        layout="@layout/first_step"/>
+    <!-- Login progress -->
+    <ProgressBar
+        android:id="@+id/login_progress"
+        style="?android:attr/progressBarStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:visibility="gone" />
 
-    <include
-        android:id="@id/id_include_2"
-        android:layout_below="@+id/toolbar"
+    <RelativeLayout
+        android:id="@+id/login_form"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:visibility="gone"
-        layout="@layout/second_steps"/>
+        android:layout_below="@+id/toolbar">
 
-    <include
-        android:id="@id/id_include_3"
-        android:layout_below="@+id/toolbar"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:visibility="gone"
-        layout="@layout/third_steps">
-    </include>
 
-    <include
-        android:id="@id/id_include_4"
-        android:layout_below="@+id/toolbar"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:visibility="gone"
-        layout="@layout/fourth_steps">
-    </include>
+        <include
+            android:id="@id/id_include_1"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="visible"
+            layout="@layout/first_step"/>
+
+        <include
+            android:id="@id/id_include_2"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="gone"
+            layout="@layout/second_steps"/>
+
+        <include
+            android:id="@id/id_include_3"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="gone"
+            layout="@layout/third_steps">
+        </include>
+
+        <include
+            android:id="@id/id_include_4"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="gone"
+            layout="@layout/fourth_steps">
+        </include>
+
+    </RelativeLayout>
+
 
 </RelativeLayout>

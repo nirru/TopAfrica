@@ -1,15 +1,19 @@
 package net.topafrica.Annuaire.rx;
 
+import android.location.Address;
 import android.widget.TextView;
 
 import java.util.ArrayList;
+import java.util.List;
 
+import rx.Observable;
 import rx.functions.Action1;
+import rx.schedulers.Schedulers;
 
 public class DisplayAddressOnViewAction implements Action1<ArrayList<String>> {
     private final TextView target_country, target_city, target_address,target_cordinate;
 
-    public DisplayAddressOnViewAction(TextView target_country,TextView target_city,TextView target_address,TextView target_cordinate) {
+    public DisplayAddressOnViewAction(TextView target_country, TextView target_city, TextView target_address, TextView target_cordinate) {
         this.target_country = target_country;
         this.target_city = target_city;
         this.target_address = target_address;

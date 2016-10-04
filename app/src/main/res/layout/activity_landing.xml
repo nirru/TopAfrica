@@ -215,27 +215,12 @@
             android:paddingRight="@dimen/activity_vertical_margin"
             android:paddingLeft="@dimen/activity_vertical_margin">
 
-            <TextView
-                android:id="@id/id_filter"
-                android:layout_width="75dp"
-                android:layout_height="30dp"
-                android:text="@string/filter"
-                android:textSize="11sp"
-                android:layout_marginTop="@dimen/activity_vertical_margin"
-                android:layout_alignParentEnd="true"
-                android:layout_gravity="center"
-                android:background="@drawable/card_background"
-                android:gravity="center"/>
-
-
-
             <android.support.v7.widget.RecyclerView
                 android:id="@id/id_recyleview_category"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/activity_vertical_margin"
-                android:clipToPadding="false"
-                android:layout_below="@id/id_filter">
+                android:clipToPadding="false">
 
             </android.support.v7.widget.RecyclerView>
         </RelativeLayout>

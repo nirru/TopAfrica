@@ -1,5 +1,6 @@
 package net.topafrica.Annuaire.rx;
 
+import android.content.Context;
 import android.location.Address;
 import android.text.TextUtils;
 
@@ -20,11 +21,15 @@ import java.util.Locale;
 import rx.Observable;
 import rx.Subscriber;
 
-class FallbackReverseGeocodeObservable implements Observable.OnSubscribe<List<Address>> {
+public class FallbackReverseGeocodeObservable implements Observable.OnSubscribe<List<Address>> {
     private final Locale locale;
     private final double latitude;
     private final double longitude;
     private final int maxResults;
+
+    public static Observable<List<Address>> createObservable( Locale locale, double latitude, double longitude, int maxResults) {
+        return Observable.create(new FallbackReverseGeocodeObservable(locale, latitude, longitude, maxResults));
+    }
 
     FallbackReverseGeocodeObservable(Locale locale, double latitude, double longitude, int maxResults) {
         this.locale = locale;

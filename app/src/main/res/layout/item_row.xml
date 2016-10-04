@@ -61,7 +61,7 @@
             android:maxLines="1"
             android:textSize="13sp"
             android:textStyle="bold"
-            android:text="@string/business_title"/>
+            android:text="@string/business_category"/>
 
         <TextView
             android:id="@id/id_card_business_title_value"

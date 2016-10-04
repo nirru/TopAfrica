@@ -106,4 +106,24 @@ public class AppController extends Application{
         dialog.show();
     }
 
+    public void okAlert(final Context mContext,String title,String message){
+        AlertDialog.Builder builder = new AlertDialog.Builder(mContext,R.style.MyDialogTheme);
+
+        // Setting Dialog Title
+        builder.setTitle(title);
+        builder.setMessage(message);
+
+        // On pressing Settings button
+        builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog,int which) {
+                ((AppCompatActivity)mContext).finish();
+            }
+        });
+
+        AlertDialog dialog = builder.create();
+        dialog.setCanceledOnTouchOutside(false);
+        // display dialog
+        dialog.show();
+    }
+
 }

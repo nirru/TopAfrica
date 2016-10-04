@@ -47,6 +47,7 @@
     <string name="business_name">Business Name</string>
     <string name="business_address">Business Address</string>
     <string name="business_title">Title</string>
+    <string name="business_category">Category</string>
     <string name="business_menu">Menu</string>
     <string name="business_review">Review</string>
     <string name="business_text_open">Open</string>

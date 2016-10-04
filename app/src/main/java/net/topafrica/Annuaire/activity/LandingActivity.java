@@ -410,33 +410,33 @@ public class LandingActivity extends BaseActivity {
     }
     @OnClick(R.id.id_business_card_2)
     public void restaurentClick(View v){
-        startNextActivity("Shop");
+        startNextActivity("Food");
     }
     @OnClick(R.id.id_business_card_3)
     public void barClicked(View v){
-      startNextActivity("Shop");
+      startNextActivity("Bar");
     }
     @OnClick(R.id.id_business_card_4)
     public void hotelClicked(View v){
-      startNextActivity("Shop");
+      startNextActivity("Hotels");
     }
     @OnClick(R.id.id_business_card_5)
     public void fuelClicked(View v){
-       startNextActivity("Shop");
+       startNextActivity("Gas stations");
     }
     @OnClick(R.id.id_business_card_6)
     public void parkingClicked(View v){
-      startNextActivity("Shop");
+      startNextActivity("Movie Theatres");
     } @OnClick(R.id.id_business_card_7)
     public void pharmaciesClicked(View v){
-      startNextActivity("Shop");
+      startNextActivity("Pharmacies");
     } @OnClick(R.id.id_business_card_8)
     public void hospitalClicked(View v){
-     startNextActivity("Shop");
+     startNextActivity("Hospital");
     }
     @OnClick(R.id.id_business_card_9)
     public void medicinesClicked(View v){
-      startNextActivity("Shop");
+      startNextActivity("Doctor");
     }
 
     @OnClick(R.id.id_create_business)

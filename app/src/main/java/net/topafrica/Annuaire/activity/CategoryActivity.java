@@ -64,7 +64,7 @@ public class CategoryActivity extends BaseDrawerActivity {
     private GoogleMap mMap;
 
     private CategoryListAdapter categoryListAdapter;
-    public static final List<Businesse> ITEMS = new ArrayList<Businesse>();
+    public  List<Businesse> ITEMS = new ArrayList<Businesse>();
 
     @Override
     public void onStart() {
@@ -115,7 +115,7 @@ public class CategoryActivity extends BaseDrawerActivity {
             buildGoogleApiClient();
         setContentView(R.layout.activity_category);
 
-
+        ITEMS = new ArrayList<Businesse>();
         if (savedInstanceState == null) {
             pendingIntroAnimation = true;
         } else {
@@ -123,6 +123,7 @@ public class CategoryActivity extends BaseDrawerActivity {
         }
         recyleView.setLayoutManager(new LinearLayoutManager(CategoryActivity.this));
         categoryListAdapter =  new CategoryListAdapter(ITEMS,CategoryActivity.this);
+        recyleView.setAdapter(categoryListAdapter);
         try {
             MapsInitializer.initialize(CategoryActivity.this);
             if (mapView != null) {
@@ -178,7 +179,7 @@ public class CategoryActivity extends BaseDrawerActivity {
     }
 
     private void setUpRecyleView(){
-        String type= "Shop";
+        String type= "";
         if (getIntent() != null){
             type = getIntent().getStringExtra(LandingActivity.KEY);
         }
@@ -191,12 +192,11 @@ public class CategoryActivity extends BaseDrawerActivity {
             public void onChildAdded(DataSnapshot dataSnapshot, String previousChildName) {
                 showProgress(false);
                 Businesse match = dataSnapshot.getValue(Businesse.class);
-                ITEMS.add(match);
-                recyleView.setAdapter(categoryListAdapter);
+                categoryListAdapter.addItem(match);
+//                recyleView.setAdapter(categoryListAdapter);
             }
             @Override
             public void onChildChanged(DataSnapshot dataSnapshot, String previousChildName) {
-                Log.d("MESSAGEFRAGMENT", "CHILDCHANGE");
             }
             @Override
             public void onChildRemoved(DataSnapshot dataSnapshot) {

@@ -24,6 +24,7 @@ import net.topafrica.Annuaire.modal.category.Businesse;
 import net.topafrica.Annuaire.rx.AddressToStringFunc;
 import net.topafrica.Annuaire.rx.DisplayTextOnViewAction;
 import net.topafrica.Annuaire.rx.ErrorHandler;
+import net.topafrica.Annuaire.rx.FallbackReverseGeocodeObservable;
 import net.topafrica.Annuaire.rx.ReverseGeocodeObservable;
 
 import org.w3c.dom.Text;
@@ -266,20 +267,20 @@ public class CategorySearchAdapter<T> extends RecyclerView.Adapter<RecyclerView.
         public void onItemClick(int position, View v);
     }
 
-private void getStringAdress(double lat, double lng, TextView targetView){
-    Observable<List<Address>> reverseGeocodeObservable = ReverseGeocodeObservable.createObservable(mContext, Locale.getDefault(), lat, lng, 1);
-    reverseGeocodeObservable
-            .map(new Func1<List<Address>, Address>() {
-                @Override
-                public Address call(List<Address> addresses) {
-                    return addresses != null && !addresses.isEmpty() ? addresses.get(0) : null;
-                }
-            })
-            .map(new AddressToStringFunc())
-            .subscribeOn(Schedulers.io())               // use I/O thread to query for addresses
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe(new DisplayTextOnViewAction(targetView),new ErrorHandler(mContext));
-}
+    private void getStringAdress(double lat, double lng, TextView targetView){
+        FallbackReverseGeocodeObservable.createObservable(Locale.getDefault(),lat,lng,1)
+                .map(new Func1<List<Address>, Address>() {
+                    @Override
+                    public Address call(List<Address> addresses) {
+                        return addresses != null && !addresses.isEmpty() ? addresses.get(0) : null;
+                    }
+                })
+                .map(new AddressToStringFunc())
+                .subscribeOn(Schedulers.io())               // use I/O thread to query for addresses
+                .observeOn(AndroidSchedulers.mainThread())
+                .unsubscribeOn(Schedulers.io())
+                .subscribe(new DisplayTextOnViewAction(targetView),new ErrorHandler(mContext));
+    }
 
 
 }

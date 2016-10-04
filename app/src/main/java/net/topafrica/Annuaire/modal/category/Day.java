@@ -19,11 +19,11 @@ import com.google.firebase.database.IgnoreExtraProperties;
 @IgnoreExtraProperties
 public class Day {
     @JsonProperty("closeAt")
-    private Integer closeAt;
+    private Long closeAt;
     @JsonProperty("day")
     private String day;
     @JsonProperty("openAt")
-    private Integer openAt;
+    private Long openAt;
     @JsonIgnore
     private Map<String, Object> additionalProperties = new HashMap<String, Object>();
 
@@ -36,7 +36,7 @@ public class Day {
      * The closeAt
      */
     @JsonProperty("closeAt")
-    public Integer getCloseAt() {
+    public Long getCloseAt() {
         return closeAt;
     }
 
@@ -46,7 +46,7 @@ public class Day {
      * The closeAt
      */
     @JsonProperty("closeAt")
-    public void setCloseAt(Integer closeAt) {
+    public void setCloseAt(Long closeAt) {
         this.closeAt = closeAt;
     }
 
@@ -76,7 +76,7 @@ public class Day {
      * The openAt
      */
     @JsonProperty("openAt")
-    public Integer getOpenAt() {
+    public Long getOpenAt() {
         return openAt;
     }
 
@@ -86,7 +86,7 @@ public class Day {
      * The openAt
      */
     @JsonProperty("openAt")
-    public void setOpenAt(Integer openAt) {
+    public void setOpenAt(Long openAt) {
         this.openAt = openAt;
     }
 

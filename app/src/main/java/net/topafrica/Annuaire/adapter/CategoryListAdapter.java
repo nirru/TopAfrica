@@ -1,6 +1,7 @@
 package net.topafrica.Annuaire.adapter;
 
 import android.content.Context;
+import android.location.Address;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.AppCompatRatingBar;
 import android.support.v7.widget.RecyclerView;
@@ -20,12 +21,23 @@ import com.squareup.picasso.Picasso;
 
 import net.topafrica.Annuaire.GeoSearchModel;
 import net.topafrica.Annuaire.R;
+import net.topafrica.Annuaire.activity.createbusiness.CreateBusiness;
 import net.topafrica.Annuaire.modal.category.Businesse;
+import net.topafrica.Annuaire.rx.AddressToStringFunc;
+import net.topafrica.Annuaire.rx.AddressToStringListFunc;
+import net.topafrica.Annuaire.rx.DisplayAddressOnViewAction;
+import net.topafrica.Annuaire.rx.DisplayTextOnViewAction;
+import net.topafrica.Annuaire.rx.ErrorHandler;
+import net.topafrica.Annuaire.rx.FallbackReverseGeocodeObservable;
 
 import java.util.List;
+import java.util.Locale;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Func1;
+import rx.schedulers.Schedulers;
 
 
 /**
@@ -160,9 +172,10 @@ public class CategoryListAdapter<T> extends RecyclerView.Adapter<RecyclerView.Vi
             setFadeAnimation(holder.itemView);
             T dataItem = dataSet.get(position);
             ((EventViewHolder) holder).textView_business_name.setText(((Businesse)dataItem).getName().toString());
-            double lat = ((Businesse)dataItem).getMapdata().getAnnotations().get(0).getLatitude();
-            double lng = ((Businesse)dataItem).getMapdata().getAnnotations().get(0).getLongitude();
-            ((EventViewHolder) holder).textView_business_address.setText(GeoSearchModel.addressByLocation(new LatLng(lat,lng),mContext));
+            String[] geoArray = ((Businesse)dataItem).getOfficeLocation().trim().split(",");
+            double lat = Double.valueOf(geoArray[0]);
+            double lng = Double.valueOf(geoArray[1]);
+            getStringAdress(lat,lng,((EventViewHolder) holder).textView_business_address);
             ((EventViewHolder) holder).textView_business_title_value.setText(((Businesse)dataItem).getCategory().toString());
             ((EventViewHolder) holder).textView_business_menu_value.setText("Coming Soon");
             Picasso.with(mContext)
@@ -272,6 +285,20 @@ public class CategoryListAdapter<T> extends RecyclerView.Adapter<RecyclerView.Vi
 
     public interface MyClickListener {
         public void onItemClick(int position, View v);
+    }
+    private void getStringAdress(double lat, double lng, TextView targetView){
+        FallbackReverseGeocodeObservable.createObservable(Locale.getDefault(),lat,lng,1)
+                .map(new Func1<List<Address>, Address>() {
+                    @Override
+                    public Address call(List<Address> addresses) {
+                        return addresses != null && !addresses.isEmpty() ? addresses.get(0) : null;
+                    }
+                })
+                .map(new AddressToStringFunc())
+                .subscribeOn(Schedulers.io())               // use I/O thread to query for addresses
+                .observeOn(AndroidSchedulers.mainThread())
+                .unsubscribeOn(Schedulers.io())
+                .subscribe(new DisplayTextOnViewAction(targetView),new ErrorHandler(mContext));
     }
 
 

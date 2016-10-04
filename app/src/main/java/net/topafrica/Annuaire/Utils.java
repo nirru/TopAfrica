@@ -23,7 +23,9 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.TimeZone;
 
 /**
  * Created by froger_mcs on 05.11.14.
@@ -161,4 +163,18 @@ public class Utils {
         return cursor.getString(column_index);
     }
 
+    public static void setScreenHeight(int screenHeight) {
+        Utils.screenHeight = screenHeight;
+    }
+
+    public static long getTimeInMilli(int hour, int min ,int second){
+        Calendar now = Calendar.getInstance();
+        int year = now.get(Calendar.YEAR);
+        int month = now.get(Calendar.MONTH) + 1; // Note: zero based!
+        int day = now.get(Calendar.DAY_OF_MONTH);
+
+        now.set(year,month,day,year,month,second);
+        Log.e("TIME INMILLI " , "" + now.getTimeInMillis());
+        return now.getTimeInMillis();
+    }
 }

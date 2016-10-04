@@ -1,5 +1,8 @@
 package net.topafrica.Annuaire.activity.createbusiness;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
+import android.annotation.TargetApi;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -26,9 +29,8 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RadioGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
 import com.firebase.client.ChildEventListener;
 import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
@@ -51,6 +53,7 @@ import com.wdullaer.materialdatetimepicker.time.RadialPickerLayout;
 import com.wdullaer.materialdatetimepicker.time.TimePickerDialog;
 
 import net.topafrica.Annuaire.AppConstant;
+import net.topafrica.Annuaire.AppController;
 import net.topafrica.Annuaire.PermissionUtils;
 import net.topafrica.Annuaire.R;
 import net.topafrica.Annuaire.Utils;
@@ -67,17 +70,16 @@ import net.topafrica.Annuaire.modal.category.Openhours;
 import net.topafrica.Annuaire.rx.AddressToStringListFunc;
 import net.topafrica.Annuaire.rx.DisplayAddressOnViewAction;
 import net.topafrica.Annuaire.rx.ErrorHandler;
-import net.topafrica.Annuaire.rx.ReverseGeocodeObservable;
-import net.topafrica.Annuaire.rx.firebase.RxFirebaseDatabase;
+import net.topafrica.Annuaire.rx.FallbackReverseGeocodeObservable;
 import net.topafrica.Annuaire.rx.firebase.RxFirebaseStorage;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
-import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
 import butterknife.Bind;
@@ -88,7 +90,6 @@ import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.functions.Func1;
-import rx.functions.Func2;
 import rx.functions.Func5;
 import rx.schedulers.Schedulers;
 
@@ -436,6 +437,14 @@ public class CreateBusiness extends BaseDrawerActivity implements GoogleMap.OnMa
     @Bind(R.id.id_evening_schdule)
     TextView evening_sch;
 
+    @Nullable
+    @Bind(R.id.login_progress)
+    View mProgressView;
+
+    @Nullable
+    @Bind(R.id.login_form)
+    View login_form;
+
     @OnClick(R.id.id_morning_schdule)
     public void morningSchduleClick(View v){
         morning_sch.setBackgroundResource(R.color.colorAccent);
@@ -466,6 +475,7 @@ public class CreateBusiness extends BaseDrawerActivity implements GoogleMap.OnMa
 
     private boolean mapsSupported = true;
     private GoogleMap mMap;
+    private double lat_double, lng_double;
 
     public static final String TAG_CAMERA = "Camera";
     public static final String TAG_CHOOSE_FROM_LIBRARY = "Gallery";
@@ -476,6 +486,71 @@ public class CreateBusiness extends BaseDrawerActivity implements GoogleMap.OnMa
     File file;
     Uri logo_uri = null;
     Uri pic_uri =  null;
+
+    String logo_url = "";
+    String picture_url = "";
+    String category = "";
+    String listing = "Enterprise";
+
+    Day _dayMonday = new Day();
+    Day _dayTuesday = new Day();
+    Day _dayWednesday = new Day();
+    Day _dayThrusday = new Day();
+    Day _dayFriday = new Day();
+    Day _daySaturday = new Day();
+    Day _daySunday = new Day();
+
+    Day _dayMondayEvening = new Day();
+    Day _dayTuesdayEvening = new Day();
+    Day _dayWednesdayEvening = new Day();
+    Day _dayThrusdayEvening = new Day();
+    Day _dayFridayEvening = new Day();
+    Day _daySaturdayEvening = new Day();
+    Day _daySundayEvening = new Day();
+
+    Annotation _annotation = new Annotation();
+
+    /**
+     * Shows the progress UI and hides the login form.
+     */
+    @TargetApi(Build.VERSION_CODES.HONEYCOMB_MR2)
+    public  void showProgress(final boolean show) {
+        // On Honeycomb MR2 we have the ViewPropertyAnimator APIs, which allow
+        // for very easy animations. If available, use these APIs to fade-in
+        // the progress spinner.
+        try{
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR2) {
+                int shortAnimTime = getResources().getInteger(android.R.integer.config_shortAnimTime);
+
+                login_form.setVisibility(show ? View.GONE : View.VISIBLE);
+                login_form.animate().setDuration(shortAnimTime).alpha(
+                        show ? 0 : 1).setListener(new AnimatorListenerAdapter() {
+                    @Override
+                    public void onAnimationEnd(Animator animation) {
+                        login_form.setVisibility(show ? View.GONE : View.VISIBLE);
+                    }
+                });
+
+                mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
+                mProgressView.animate().setDuration(shortAnimTime).alpha(
+                        show ? 1 : 0).setListener(new AnimatorListenerAdapter() {
+                    @Override
+                    public void onAnimationEnd(Animator animation) {
+                        mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
+                    }
+                });
+            } else {
+                // The ViewPropertyAnimator APIs are not available, so simply show
+                // and hide the relevant UI components.
+                login_form.setVisibility(show ? View.VISIBLE : View.GONE);
+                login_form.setVisibility(show ? View.GONE : View.VISIBLE);
+            }
+        }catch (Exception ex){
+            ex.printStackTrace();
+        }
+
+    }
+
 
     private void selectImage()  {
         final CharSequence[] items = {TAG_CAMERA, TAG_CHOOSE_FROM_LIBRARY,
@@ -537,12 +612,117 @@ public class CreateBusiness extends BaseDrawerActivity implements GoogleMap.OnMa
                 String minuteString = minute < 10 ? "0" + minute : "" + minute;
                 String secondString = second < 10 ? "0" + second : "" + second;
                 String time = hourString + "h" + minuteString + "m" + secondString + "s";
-//                        mStartTimeView.setText(time);
                 targetView.setText("" + time);
+                gettimeList(targetView,hourOfDay,minute,second);
             }
         }, now.get(Calendar.HOUR_OF_DAY), now.get(Calendar.MINUTE), true);
 
         timePickerDialog.show(getFragmentManager(),"Timepickerdialog");
+    }
+
+    public void gettimeList(TextView textView,int hour,int min,int sec){
+       switch (textView.getId()){
+           case R.id.id_mor_mon_opn_time:
+               openTime(_dayMonday,"Monday",hour,min,sec);
+               break;
+           case R.id.id_mor_mon_close_time:
+               closeTime(_dayMonday,"Monday",hour,min,sec);
+               break;
+           case R.id.id_mor_tue_opn_time:
+               openTime(_dayTuesday,"Tuesday",hour,min,sec);
+               break;
+           case R.id.id_mor_tue_close_time:
+               closeTime(_dayTuesday,"Tuesday",hour,min,sec);
+               break;
+           case R.id.id_mor_wed_opn_time:
+               openTime(_dayWednesday,"Wednesday",hour,min,sec);
+               break;
+           case R.id.id_mor_wed_close_time:
+               closeTime(_dayWednesday,"Wednesday",hour,min,sec);
+               break;
+           case R.id.id_mor_thrus_opn_time:
+               openTime(_dayThrusday,"Thursday",hour,min,sec);
+               break;
+           case R.id.id_mor_thrus_close_time:
+               closeTime(_dayThrusday,"Thursday",hour,min,sec);
+               break;
+           case R.id.id_mor_friday_opn_time:
+               openTime(_dayFriday,"Friday",hour,min,sec);
+               break;
+           case R.id.id_mor_friday_close_time:
+               closeTime(_dayFriday,"Friday",hour,min,sec);
+               break;
+           case R.id.id_mor_sat_opn_time:
+               openTime(_daySaturday,"Saturday",hour,min,sec);
+               break;
+           case R.id.id_mor_sat_close_time:
+               closeTime(_daySaturday,"Saturday",hour,min,sec);
+               break;
+           case R.id.id_mor_sun_opn_time:
+               openTime(_daySunday,"Sunday",hour,min,sec);
+               break;
+           case R.id.id_mor_sun_close_time:
+               closeTime(_daySunday,"Sunday",hour,min,sec);
+               break;
+           case R.id.id_even_mon_opn_time:
+               openTime(_dayMondayEvening,"Monday",hour,min,sec);
+               break;
+           case R.id.id_even_mon_close_time:
+               closeTime(_dayMondayEvening,"Monday",hour,min,sec);
+               break;
+           case R.id.id_even_tue_opn_time:
+               openTime(_dayTuesdayEvening,"Tuesday",hour,min,sec);
+               break;
+           case R.id.id_even_tue_close_time:
+               closeTime(_dayTuesdayEvening,"Tuesday",hour,min,sec);
+               break;
+           case R.id.id_even_wed_opn_time:
+               openTime(_dayWednesdayEvening,"Wednesday",hour,min,sec);
+               break;
+           case R.id.id_even_wed_close_time:
+               closeTime(_dayWednesdayEvening,"Wednesday",hour,min,sec);
+               break;
+           case R.id.id_even_thrus_opn_time:
+               openTime(_dayThrusdayEvening,"Thursday",hour,min,sec);
+               break;
+           case R.id.id_even_thrus_close_time:
+               closeTime(_dayThrusdayEvening,"Thursday",hour,min,sec);
+               break;
+           case R.id.id_even_friday_opn_time:
+               openTime(_dayFridayEvening,"Friday",hour,min,sec);
+               break;
+           case R.id.id_even_friday_close_time:
+               closeTime(_dayFridayEvening,"Friday",hour,min,sec);
+               break;
+           case R.id.id_even_sat_opn_time:
+               openTime(_daySaturdayEvening,"Saturday",hour,min,sec);
+               break;
+           case R.id.id_even_sat_close_time:
+               closeTime(_daySaturdayEvening,"Saturday",hour,min,sec);
+               break;
+           case R.id.id_even_sun_opn_time:
+               openTime(_daySundayEvening,"Sunday",hour,min,sec);
+               break;
+           case R.id.id_even_sun_close_time:
+               closeTime(_daySundayEvening,"Sunday",hour,min,sec);
+               break;
+           default:
+               Toast.makeText(CreateBusiness.this,"No Matching value find",Toast.LENGTH_SHORT).show();
+               break;
+
+       }
+    }
+
+    private Day openTime(Day _day,String day,int hr,int min, int second){
+        _day.setDay(day);
+        _day.setOpenAt(Utils.getTimeInMilli(hr,min,second));
+        return _day;
+    }
+
+    private Day closeTime(Day _day,String day,int hr,int min, int second){
+        _day.setDay(day);
+        _day.setCloseAt(Utils.getTimeInMilli(hr,min,second));
+        return _day;
     }
 
     @Override
@@ -569,7 +749,9 @@ public class CreateBusiness extends BaseDrawerActivity implements GoogleMap.OnMa
         super.onDestroy();
         if (mapView!=null)
             mapView.onDestroy();
+        if (_subscription !=null)
         _subscription.unsubscribe();
+        if (_storage_subscription != null)
         _storage_subscription.unsubscribe();
     }
 
@@ -584,13 +766,16 @@ public class CreateBusiness extends BaseDrawerActivity implements GoogleMap.OnMa
     public void onConnected(Location location) {
         super.onConnected(location);
         if(location != null){
+            lat_double = location.getLatitude();
+            lng_double = location.getLongitude();
            initializeMap(location);
         }
     }
 
     private void displayLocationOnDragerEnd(double latitude,double longitude,float mZoom) {
         try {
-//            mMap.addMarker(markerOptions.position(new LatLng(latitude, longitude)));
+            lat_double = latitude;
+            lng_double = longitude;
             mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(latitude, longitude), mZoom));
             getStringAdress(latitude,longitude);
         }catch (Exception ex){
@@ -599,8 +784,7 @@ public class CreateBusiness extends BaseDrawerActivity implements GoogleMap.OnMa
     }
 
     private void getStringAdress(double lat, double lng){
-        Observable<List<Address>> reverseGeocodeObservable = ReverseGeocodeObservable.createObservable(CreateBusiness.this, Locale.getDefault(), lat, lng, 1);
-        reverseGeocodeObservable
+        FallbackReverseGeocodeObservable.createObservable(Locale.getDefault(),lat,lng,1)
                 .map(new Func1<List<Address>, Address>() {
                     @Override
                     public Address call(List<Address> addresses) {
@@ -610,6 +794,7 @@ public class CreateBusiness extends BaseDrawerActivity implements GoogleMap.OnMa
                 .map(new AddressToStringListFunc(lat,lng))
                 .subscribeOn(Schedulers.io())               // use I/O thread to query for addresses
                 .observeOn(AndroidSchedulers.mainThread())
+                .unsubscribeOn(Schedulers.io())
                 .subscribe(new DisplayAddressOnViewAction(country,city,address,cordinate),new ErrorHandler(CreateBusiness.this));
     }
     @Override
@@ -627,8 +812,11 @@ public class CreateBusiness extends BaseDrawerActivity implements GoogleMap.OnMa
         } catch (Exception e) {
             mapsSupported = false;
         }
+        pic_camera_image.setTag(1);
+        logo_camera_image.setTag(1);
         initInstance();
         init();
+        setTimeAsZeroIfNoTimeIsSelectedForDay();
         queryFirebase();
         setupObservables1();
         radioCheckd();
@@ -676,6 +864,7 @@ public class CreateBusiness extends BaseDrawerActivity implements GoogleMap.OnMa
                     CategoryAdapter.SELECTED_POSITION = -1;
                 }
 
+                category = LIST.get(CategoryAdapter.SELECTED_POSITION).getCategoryname();
                 categoryAdapter.notifyDataSetChanged();
             }
         });
@@ -692,10 +881,12 @@ public class CreateBusiness extends BaseDrawerActivity implements GoogleMap.OnMa
                         Bitmap photo = (Bitmap) data.getExtras().get("data");
                         file =  Utils.saveImageToExternalStorage(photo);
                         if (i==1){
+                            logo_camera_image.setTag(2);
                             setPic(file.getAbsolutePath(),logo_camera_image);
                             logo_uri = Uri.fromFile(file);
                         }
                         else{
+                            pic_camera_image.setTag(2);
                             setPic(file.getAbsolutePath(),pic_camera_image);
                             pic_uri = Uri.fromFile(file);
                         }
@@ -711,19 +902,23 @@ public class CreateBusiness extends BaseDrawerActivity implements GoogleMap.OnMa
             if (requestCode == AppConstant.PICK_IMAGE_REQUEST) {
                 // SDK >= 11 && SDK < 19
                 String realPath = "";
-                 if (Build.VERSION.SDK_INT < 19)
-                    realPath = Utils.getRealPathFromURI_API11to18(this, data.getData());
-                else
-                    realPath = Utils.getRealPathFromURI_API19(this, data.getData());
+//                 if (Build.VERSION.SDK_INT < 19)
+//                    realPath = Utils.getRealPathFromURI_API11to18(this, data.getData());
+//                else
+//                    realPath = Utils.getRealPathFromURI_API19(this, data.getData());
 
 //                Log.e("REAL PATH", "" + realPath);
                 if (i==1){
+                    logo_camera_image.setTag(2);
                     logo_uri = data.getData();
-                    setPic(realPath,logo_camera_image);
+//                    logo_camera_image.setImageURI(logo_uri);
+                    setPic(logo_uri,logo_camera_image);
                 }
                 else{
+                    pic_camera_image.setTag(2);
                     pic_uri = data.getData();
-                    setPic(realPath,pic_camera_image);
+//                    pic_camera_image.setImageURI(pic_uri);
+                    setPic(pic_uri,pic_camera_image);
                 }
             }
         }
@@ -737,7 +932,7 @@ public class CreateBusiness extends BaseDrawerActivity implements GoogleMap.OnMa
         // Get the dimensions of the bitmap
         BitmapFactory.Options bmOptions = new BitmapFactory.Options();
         bmOptions.inJustDecodeBounds = true;
-        BitmapFactory.decodeFile(mCurrentPhotoPath, bmOptions);
+//        BitmapFactory.decodeFile(mCurrentPhotoPath, bmOptions);
         int photoW = bmOptions.outWidth;
         int photoH = bmOptions.outHeight;
 
@@ -751,6 +946,34 @@ public class CreateBusiness extends BaseDrawerActivity implements GoogleMap.OnMa
 //
         Bitmap bitmap = BitmapFactory.decodeFile(mCurrentPhotoPath, bmOptions);
         imageView.setImageBitmap(bitmap);
+    }
+
+    private void setPic(Uri uri ,ImageView imageView) {
+        // Get the dimensions of the View
+        try {
+            int targetW = imageView.getWidth();
+            int targetH = imageView.getHeight();
+
+            // Get the dimensions of the bitmap
+            BitmapFactory.Options bmOptions = new BitmapFactory.Options();
+            bmOptions.inJustDecodeBounds = true;
+            int photoW = bmOptions.outWidth;
+            int photoH = bmOptions.outHeight;
+
+            // Determine how much to scale down the image
+            int scaleFactor = Math.min(photoW / targetW, photoH / targetH);
+
+            // Decode the image file into a Bitmap sized to fill the View
+            bmOptions.inJustDecodeBounds = false;
+            bmOptions.inSampleSize = scaleFactor;
+            bmOptions.inPurgeable = true;
+            InputStream inputStream = getContentResolver().openInputStream(uri);
+            Bitmap bitmap = BitmapFactory.decodeStream(inputStream,null,bmOptions);
+            imageView.setImageBitmap(bitmap);
+        }catch (Exception ex){
+            ex.printStackTrace();
+        }
+
     }
 
     private void galleryAddPic(String mCurrentPhotoPath) {
@@ -848,16 +1071,46 @@ public class CreateBusiness extends BaseDrawerActivity implements GoogleMap.OnMa
             @Override
             public void onNext(Integer integer) {
                 if (integer == R.id.id_radio_button_1){
-                    Log.e("FIRST SELECTION", "" + "FIRST");
+                    listing = "Enterprise";
                 }else if(integer == R.id.id_radio_button_2){
-                    Log.e("SECOND SELECTION", "" + "SECOND");
+                    listing = "Professional";
                 }else if(integer == R.id.id_radio_button_3){
-                    Log.e("Third SELECTION", "" + "THIRD");
+                    listing = "Personnel";
                 }
             }
         });
     }
 
+    private void setTimeAsZeroIfNoTimeIsSelectedForDay(){
+            openTime(_dayMonday,"Monday",0,0,0);
+            closeTime(_dayMonday,"Monday",0,0,0);
+            openTime(_dayTuesday,"Tuesday",0,0,0);
+            closeTime(_dayTuesday,"Tuesday",0,0,0);
+            openTime(_dayWednesday,"Wednesday",0,0,0);
+            closeTime(_dayWednesday,"Wednesday",0,0,0);
+            openTime(_dayThrusday,"Thrusday",0,0,0);
+            closeTime(_dayThrusday,"Thrusday",0,0,0);
+            openTime(_dayFriday,"Friday",0,0,0);
+            closeTime(_dayFriday,"Friday",0,0,0);
+            openTime(_daySaturday,"Saturday",0,0,0);
+            closeTime(_daySaturday,"Saturday",0,0,0);
+            openTime(_daySunday,"Saturday",0,0,0);
+            closeTime(_daySunday,"Saturday",0,0,0);
+            openTime(_dayMondayEvening,"Monday",0,0,0);
+            closeTime(_dayMondayEvening,"Monday",0,0,0);
+            openTime(_dayTuesdayEvening,"Tuesday",0,0,0);
+            closeTime(_dayTuesdayEvening,"Tuesday",0,0,0);
+            openTime(_dayWednesdayEvening,"Wednesday",0,0,0);
+            closeTime(_dayWednesdayEvening,"Wednesday",0,0,0);
+            openTime(_dayThrusdayEvening,"Thrusday",0,0,0);
+            closeTime(_dayThrusdayEvening,"Thrusday",0,0,0);
+            openTime(_dayFridayEvening,"Friday",0,0,0);
+            closeTime(_dayFridayEvening,"Friday",0,0,0);
+            openTime(_daySaturdayEvening,"Saturday",0,0,0);
+            closeTime(_daySaturdayEvening,"Saturday",0,0,0);
+            openTime(_daySundayEvening,"Sunday",0,0,0);
+            closeTime(_daySundayEvening,"Sunday",0,0,0);
+    }
 
     // Validate input data with debounce
     private void setupObservables1() {
@@ -882,7 +1135,7 @@ public class CreateBusiness extends BaseDrawerActivity implements GoogleMap.OnMa
                 .map(new Func1<CharSequence, Boolean>() {
                     @Override
                     public Boolean call(CharSequence s) {
-                        ValidationResult result = validateUsername(s.toString());
+                        ValidationResult result = validateBusiness(s.toString());
                         text_business_name.setError(result.getReason());
                         return result.isValid();
                     }
@@ -894,7 +1147,7 @@ public class CreateBusiness extends BaseDrawerActivity implements GoogleMap.OnMa
                 .map(new Func1<CharSequence, Boolean>() {
                     @Override
                     public Boolean call(CharSequence s) {
-                        ValidationResult result = validateUsername(s.toString());
+                        ValidationResult result = validateWebsite(s.toString());
                         text_business_type.setError(result.getReason());
                         return result.isValid();
                     }
@@ -960,6 +1213,13 @@ public class CreateBusiness extends BaseDrawerActivity implements GoogleMap.OnMa
         return ValidationUtils.isValidUsername(username);
     }
 
+    private ValidationResult<String> validateBusiness(@NonNull String username) {
+        return ValidationUtils.isValidBusinessName(username);
+    }
+    private ValidationResult<String> validateWebsite(@NonNull String username) {
+        return ValidationUtils.isValidWebsite(username);
+    }
+
     private ValidationResult validatePhone(@NonNull String phone) {
         if (phone.isEmpty()) {
             return ValidationResult.failure(null, phone);
@@ -982,6 +1242,7 @@ public class CreateBusiness extends BaseDrawerActivity implements GoogleMap.OnMa
                 .map(new Func1<UploadTask.TaskSnapshot, UploadTask.TaskSnapshot>() {
                     @Override
                     public UploadTask.TaskSnapshot call(UploadTask.TaskSnapshot taskSnapshot) {
+                        logo_url = taskSnapshot.getDownloadUrl().toString();
                         System.out.println("LOGO URL is " + taskSnapshot.getDownloadUrl());
                         return taskSnapshot;
                     }
@@ -995,6 +1256,7 @@ public class CreateBusiness extends BaseDrawerActivity implements GoogleMap.OnMa
                 .map(new Func1<UploadTask.TaskSnapshot, UploadTask.TaskSnapshot>() {
                     @Override
                     public UploadTask.TaskSnapshot call(UploadTask.TaskSnapshot taskSnapshot) {
+                        picture_url = taskSnapshot.getDownloadUrl().toString();
                         System.out.println("PIC URL is " + taskSnapshot.getDownloadUrl());
                         return taskSnapshot;
                     }
@@ -1014,54 +1276,63 @@ public class CreateBusiness extends BaseDrawerActivity implements GoogleMap.OnMa
                     public void onNext(UploadTask.TaskSnapshot taskSnapshot) {
                         double progress = (100.0 * taskSnapshot.getBytesTransferred()) / taskSnapshot.getTotalByteCount();
                         System.out.println("Upload is " + progress + "% done");
-//                        saveDataToFirebaseDatabase();
+                        saveDataToFirebaseDatabase();
                     }
                 });
     }
 
     private void saveDataToFirebaseDatabase(){
         try {
-            ArrayList<String> dfcd = new ArrayList<>();
-            dfcd.add("www.google.com");
+            Mapdata mapdata = new Mapdata();
+            List<Day> TIMELIST = new ArrayList<>();
+            ArrayList<Annotation> annonationList = new ArrayList<>();
+            ArrayList<String> pictures = new ArrayList<>();
+            pictures.add(picture_url);
+            _annotation.setLatitude(lat_double);
+            _annotation.setLongitude(lng_double);
+            _annotation.setTitle("Title" + 1);
+            TIMELIST.add(_dayMonday);
+            TIMELIST.add(_dayTuesday);
+            TIMELIST.add(_dayWednesday);
+            TIMELIST.add(_dayThrusday);
+            TIMELIST.add(_dayFriday);
+            TIMELIST.add(_daySaturday);
+            TIMELIST.add(_daySunday);
+            TIMELIST.add(_dayMondayEvening);
+            TIMELIST.add(_dayTuesdayEvening);
+            TIMELIST.add(_dayWednesdayEvening);
+            TIMELIST.add(_dayThrusdayEvening);
+            TIMELIST.add(_dayFridayEvening);
+            TIMELIST.add(_daySaturdayEvening);
+            TIMELIST.add(_daySundayEvening);
+            Openhours openhours = new Openhours();
+            openhours.setDays(TIMELIST);
+            openhours.setZone(1);
             Firebase ref = new Firebase("https://top-africa.firebaseio.com/businesses");
-//            Firebase busiRefs = ref.child("businesses");
             Businesse businesse = new Businesse();
             businesse.setNumberEmployes("50");
-            businesse.setCity("Jaipur");
-            businesse.setCountry("India");
-            businesse.setEmail("nirmalgit@gmail.com");
-            businesse.setListingtype("Profressional");
-            businesse.setName("Nirmal");
-            businesse.setOfficeLocation("22" + "," + "23");
-            businesse.setPictures(dfcd);
-            businesse.setLogo("www.htl.com");
-            businesse.setWebsite("www.goole.com");
-            businesse.setRoad("adsad");
-            businesse.setSuburb("dfcdfcd");
-            List<Annotation> anot = new ArrayList<>();
-            Annotation ss = new Annotation();
-            ss.setLatitude(20.00);
-            ss.setLongitude(25.00);
-            ss.setTitle("MY TEST");
-            anot.add(ss);
-            Mapdata mapdata = new Mapdata();
-            mapdata.setAnnotations(anot);
-            businesse.setMapdata(mapdata);
-            List<Day> daylist = new ArrayList<>();
-            Day day = new Day();
-            day.setDay("MONDAY");
-            day.setOpenAt(147513605);
-            day.setCloseAt(23232325);
-            daylist.add(day);
-            Openhours openhours = new Openhours();
-            openhours.setDays(daylist);
-            openhours.setZone(1);
+            businesse.setCategory(category);
+            businesse.setCity(city.getText().toString());
+            businesse.setCountry(country.getText().toString());
+            businesse.setEmail(text_business_email.getText().toString());
+            businesse.setListingtype(listing);
+            businesse.setLogo(logo_url);
+            annonationList.add(_annotation);
+            mapdata.setAnnotations(annonationList);
+            businesse.setName(text_business_name.getText().toString());
+            businesse.setOfficeLocation(cordinate.getText().toString());
             businesse.setOpenhours(openhours);
-            Category ca = new Category();
-            ca.setCategoryname("TEST");
+            businesse.setPhoneNumber(text_business_phone.getText().toString());
+            businesse.setPictures(pictures);
+            businesse.setRoad(address.getText().toString());
+            businesse.setState(city.getText().toString());
+            businesse.setSuburb(city.getText().toString());
+            businesse.setWebsite(text_business_type.getText().toString());
             ref.push().setValue(businesse, new Firebase.CompletionListener() {
                 @Override
                 public void onComplete(FirebaseError firebaseError, Firebase firebase) {
+                    showProgress(false);
+                    AppController.getInstance().okAlert(CreateBusiness.this,"","Upload Successful");
                     if (firebaseError != null) {
                         System.out.println("Data could not be saved. " + firebaseError.getMessage());
                     } else {
@@ -1073,8 +1344,6 @@ public class CreateBusiness extends BaseDrawerActivity implements GoogleMap.OnMa
         }catch (Exception ex){
             ex.printStackTrace();
         }
-
-
     }
     private void enableFirstState(){
         steps_one_view.setVisibility(View.VISIBLE);
@@ -1129,10 +1398,16 @@ public class CreateBusiness extends BaseDrawerActivity implements GoogleMap.OnMa
         enableThirdState();
     }
 
+
     @OnClick(R.id.id_next_btn_steps_four)
     public void saveToStorage(View v){
-//        uploadFiles();
-        saveDataToFirebaseDatabase();
+        if (pic_camera_image.getTag().equals(2) && logo_camera_image.getTag().equals(2)){
+            showProgress(true);
+            uploadFiles();
+        }else{
+            Toast.makeText(CreateBusiness.this,"Please choose business Logo & image",Toast.LENGTH_SHORT).show();
+        }
+
     }
 
 
