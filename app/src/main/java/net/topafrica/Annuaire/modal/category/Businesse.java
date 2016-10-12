@@ -70,7 +70,7 @@ public class Businesse {
     private String website;
     @JsonIgnore
     private Map<String, Object> additionalProperties = new HashMap<String, Object>();
-
+    private String key = "dfd";
 
     public Businesse(){
 
@@ -424,6 +424,15 @@ public class Businesse {
     @JsonAnySetter
     public void setAdditionalProperty(String name, Object value) {
         this.additionalProperties.put(name, value);
+    }
+
+
+    public String getKey() {
+        return key;
+    }
+
+    public void setKey(String key) {
+        this.key = key;
     }
 
 }

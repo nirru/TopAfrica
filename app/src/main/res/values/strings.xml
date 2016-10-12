@@ -59,13 +59,16 @@
     <string name="filter">Filter</string>
 
     <!-- TODO:CREATE BUSINESS SCREEN -->
+    <string name="hint_email">Email</string>
+    <string name="hint_password">Password</string>
     <string name="hint_business_name">Business Name</string>
     <string name="hint_business_category">Business Category</string>
     <string name="hint_business_website">Website</string>
     <string name="hint_business_type_1">Enterprise</string>
     <string name="hint_business_type_2">Professional</string>
     <string name="hint_business_type_3">Personnel</string>
-    <string name="hint_business_email">Email</string>
+    <string name="hint_business_email">Primary Email</string>
+    <string name="hint_business_sec_email">Secondary Email</string>
     <string name="hint_business_telephone">Telephone</string>
     <string name="hint_business_fax">Fax</string>
     <string name="next_btn">Next</string>
@@ -80,4 +83,18 @@
     <string name="hint_lat">Geo Coordinates</string>
     <string name="upload_logo">Upload your business Logo</string>
     <string name="upload_picture">Upload your business Picture</string>
+
+    <string name="yes">YES</string>
+    <string name="no">NO</string>
+
+    <string name="menu_item_login">Login</string>
+    <string name="menu_item_logout">Logout</string>
+
+    <string name="prompt_empoyee">Choose number of employee</string>
+    <string name="rate_buisness">Rate this business</string>
+    <string name="hint_comment">Join the community .Help other by sharing your experience about this place.</string>
+    <string name="hint_leve_comment">Leave a comment.</string>
+
+    <string name="app_id">1664608443869441</string>
+    <string name="default_web_client">1017419929473-6h8itco2n519463pobskdki3lb7j49k1.apps.googleusercontent.com</string>
 </resources>

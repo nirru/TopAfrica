@@ -3,7 +3,8 @@
     android:layout_width="@dimen/business_card_width"
     android:layout_height="@dimen/business_card_width"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    app:theme="@style/AppTheme.CardStyle"
+    app:cardBackgroundColor="@color/colorAccent"
+    app:cardCornerRadius="2dp"
     app:cardUseCompatPadding="true"
     xmlns:android="http://schemas.android.com/apk/res/android">
 
@@ -22,6 +23,7 @@
                 android:layout_height="wrap_content"
                 android:layout_centerInParent="true"
                 android:textSize="14sp"
+                android:textColor="@android:color/white"
                 android:text="No Favourites"
                 android:layout_gravity="center"/>
         </RelativeLayout>

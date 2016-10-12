@@ -4,7 +4,8 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     app:theme="@style/AppTheme.CardStyle"
-    app:cardUseCompatPadding="true">
+    app:cardBackgroundColor="@color/colorAccent"
+    app:cardCornerRadius="2dp">
 
     <RelativeLayout
         android:layout_width="match_parent"

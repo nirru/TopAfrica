@@ -5,14 +5,17 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Build;
+import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.AppCompatAutoCompleteTextView;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
@@ -47,6 +50,9 @@ import com.google.android.gms.location.places.PlaceBuffer;
 import com.google.android.gms.location.places.Places;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.jakewharton.rxbinding.support.v7.widget.RxSearchView;
 
 import net.topafrica.Annuaire.GeoSearchModel;
@@ -57,8 +63,11 @@ import net.topafrica.Annuaire.adapter.CategorySearchAdapter;
 import net.topafrica.Annuaire.adapter.FavouriteListAdapter;
 import net.topafrica.Annuaire.adapter.PlaceSearchAutoAdapter;
 import net.topafrica.Annuaire.common.BaseActivity;
+import net.topafrica.Annuaire.common.BaseDrawerActivity;
 import net.topafrica.Annuaire.dummy.DummyContent;
 import net.topafrica.Annuaire.modal.category.Businesse;
+import net.topafrica.Annuaire.rx.firebase.RxFirebaseChildEvent;
+import net.topafrica.Annuaire.rx.firebase.RxFirebaseDatabase;
 import net.topafrica.Annuaire.uiView.EndlessRecyclerOnScrollListener;
 
 import java.util.ArrayList;
@@ -69,10 +78,11 @@ import butterknife.Bind;
 import butterknife.OnClick;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 
 import static android.Manifest.permission.ACCESS_FINE_LOCATION;
 
-public class LandingActivity extends BaseActivity {
+public class LandingActivity extends BaseDrawerActivity {
 
     @Nullable
     @Bind(R.id.id_search_view)
@@ -124,24 +134,26 @@ public class LandingActivity extends BaseActivity {
     private static final int VERTICAL_ITEM_SPACE = 30;
 
     public static final String KEY = "key";
+    public static final String KEY_ACTIVITY = "key_activity";
 
     @Override
     public void onStart() {
         super.onStart();
         if (mGoogleApiClient != null)
             mGoogleApiClient.connect();
+        observeState();
     }
-//
+
     @Override
     protected void onResume() {
         super.onResume();
         resumeService();
     }
-//
+
     @Override
     public void onPause() {
         super.onPause();
-        if (mGoogleApiClient.isConnected()) {
+        if (mGoogleApiClient != null && mGoogleApiClient.isConnected()) {
             stopLocationUpdates();
         }
     }
@@ -153,6 +165,15 @@ public class LandingActivity extends BaseActivity {
             mGoogleApiClient.disconnect();
         }
     }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (observeSignInSubscription !=null)
+            observeSignInSubscription.unsubscribe();
+    }
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -238,7 +259,7 @@ public class LandingActivity extends BaseActivity {
         categorySearchAdapter = new CategorySearchAdapter(ITEMS,LandingActivity.this);
         recyclerView.setAdapter(categorySearchAdapter);
 
-        Firebase ref = new Firebase("https://top-africa.firebaseio.com/businesses");
+        Firebase ref = new Firebase("https://top-africa-annuaire-1361.firebaseio.com/businesses");
 
         Query mQuery = ref.orderByChild("category").startAt(charSequence.toString());
 //
@@ -270,7 +291,6 @@ public class LandingActivity extends BaseActivity {
 
             }
         });
-
     }
 
 
@@ -377,22 +397,22 @@ public class LandingActivity extends BaseActivity {
                             }
                         });
             }
-        } else {
-            Awareness.SnapshotApi.getWeather(mGoogleApiClient)
-                    .setResultCallback(new ResultCallback<WeatherResult>() {
-                        @Override
-                        public void onResult(@NonNull WeatherResult weatherResult) {
-                            if (!weatherResult.getStatus().isSuccess()) {
-                                Log.e(TAG, "Could not get weather.");
-                                return;
-                            }
-                            Weather weather = weatherResult.getWeather();
-//                            Log.e(TAG, "Weather: " + weather);
-                            setWeatherReport(weather,location);
-                        }
-                    });
         }
-
+//        else {
+//            Awareness.SnapshotApi.getWeather(mGoogleApiClient)
+//                    .setResultCallback(new ResultCallback<WeatherResult>() {
+//                        @Override
+//                        public void onResult(@NonNull WeatherResult weatherResult) {
+//                            if (!weatherResult.getStatus().isSuccess()) {
+//                                Log.e(TAG, "Could not get weather.");
+//                                return;
+//                            }
+//                            Weather weather = weatherResult.getWeather();
+////                            Log.e(TAG, "Weather: " + weather);
+//                            setWeatherReport(weather,location);
+//                        }
+//                    });
+//        }
     }
 
     private void setWeatherReport(Weather weather,Location location){
@@ -439,17 +459,61 @@ public class LandingActivity extends BaseActivity {
       startNextActivity("Doctor");
     }
 
+    @OnClick(R.id.id_check_rate)
+    public void checkAndRate(View v) {
+        if (firebaseUser != null) {
+            Intent i = new Intent(LandingActivity.this, CheckAndRateActivity.class);
+            startActivity(i);
+            overridePendingTransition(R.anim.move_right_in_activity, R.anim.move_left_out_activity);
+        } else {
+            yesNoAlert(LandingActivity.this, "Alert", "You must be login to Rate the bussiness.Do you want to proceed further?",1);
+        }
+    }
+
     @OnClick(R.id.id_create_business)
     public void createBusiness(View v){
-        Intent i = new Intent(this, CreateBusiness.class);
-        startActivity(i);
-        overridePendingTransition(R.anim.move_right_in_activity, R.anim.move_left_out_activity);
+        if(firebaseUser!=null){
+            Intent i = new Intent(LandingActivity.this, CreateBusiness.class);
+            startActivity(i);
+            overridePendingTransition(R.anim.move_right_in_activity, R.anim.move_left_out_activity);
+        }else{
+            yesNoAlert(LandingActivity.this,"Alert","You must be login to list your business.Do you want to proceed further?",2);
+        }
+
     }
     private void startNextActivity(String type){
         Intent i = new Intent(this, CategoryActivity.class);
         i.putExtra(KEY,type);
         startActivity(i);
         overridePendingTransition(R.anim.move_right_in_activity, R.anim.move_left_out_activity);
+    }
+
+    public void yesNoAlert(final Context mContext,String title,String message ,final int key){
+        AlertDialog.Builder builder = new AlertDialog.Builder(mContext,R.style.MyDialogTheme);
+
+        // Setting Dialog Title
+        builder.setTitle(title);
+        builder.setMessage(message);
+
+        // On pressing Settings button
+        builder.setPositiveButton(mContext.getString(R.string.yes), new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog,int which) {
+                Intent i = new Intent(LandingActivity.this, LoginActivity.class);
+                i.putExtra(KEY_ACTIVITY,key);
+                startActivity(i);
+                overridePendingTransition(R.anim.move_right_in_activity, R.anim.move_left_out_activity);
+            }
+        });
+        builder.setNegativeButton(mContext.getString(R.string.no), new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog,int which) {
+                dialog.dismiss();
+            }
+        });
+
+        AlertDialog dialog = builder.create();
+        dialog.setCanceledOnTouchOutside(false);
+        // display dialog
+        dialog.show();
     }
 
     /**

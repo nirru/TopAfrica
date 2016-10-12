@@ -13,11 +13,13 @@ import android.location.Location;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.PersistableBundle;
+import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -28,6 +30,8 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.google.android.gms.auth.api.Auth;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.awareness.Awareness;
 import com.google.android.gms.awareness.snapshot.WeatherResult;
 import com.google.android.gms.awareness.state.Weather;
@@ -40,6 +44,8 @@ import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.location.places.Places;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 import net.topafrica.Annuaire.AppConstant;
 import net.topafrica.Annuaire.AppController;
@@ -47,6 +53,7 @@ import net.topafrica.Annuaire.Config;
 import net.topafrica.Annuaire.PermissionUtils;
 import net.topafrica.Annuaire.R;
 import net.topafrica.Annuaire.modal.weather.WeatherModal;
+import net.topafrica.Annuaire.rx.firebase.RxFirebaseAuth;
 import net.topafrica.Annuaire.service.RetryWithDelay;
 import net.topafrica.Annuaire.service.ServiceFactory;
 import net.topafrica.Annuaire.service.TopAfricaWebService;
@@ -55,6 +62,7 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import rx.Observable;
 import rx.Subscriber;
+import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
@@ -123,10 +131,14 @@ public abstract class BaseActivity extends AppCompatActivity implements
     public final static int PLAY_SERVICES_RESOLUTION_REQUEST = 1000;
     public static final String TAG = "TAG==";
 
+    public GoogleSignInOptions gso;
+
+    public Subscription observeSignInSubscription;
+
    protected void resumeService(){
-       if (!AppController.getInstance().isOnline(BaseActivity.this)){
-           AppController.getInstance().showInternetConnectionDialog(BaseActivity.this);
-       }else {
+//       if (!AppController.getInstance().isOnline(BaseActivity.this)){
+//           AppController.getInstance().showInternetConnectionDialog(BaseActivity.this);
+//       }else {
            if (checkPlayServices()) {
                if (!PermissionUtils.isLocationEnabled(BaseActivity.this))
                    AppController.getInstance().showSettingsAlert(BaseActivity.this);
@@ -135,7 +147,7 @@ public abstract class BaseActivity extends AppCompatActivity implements
                        startLocationUpdates();
                }
            }
-       }
+//       }
    }
 
     @Override
@@ -428,6 +440,11 @@ public abstract class BaseActivity extends AppCompatActivity implements
      * Creating google api client object
      */
     public synchronized void buildGoogleApiClient() {
+       gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                .requestIdToken(getString(R.string.default_web_client_id))
+                .requestEmail()
+                .build();
+
         mGoogleApiClient = new GoogleApiClient.Builder(BaseActivity.this)
                 .enableAutoManage(this, 0 /* clientId */, BaseActivity.this)
                 .addConnectionCallbacks(BaseActivity.this)
@@ -435,6 +452,7 @@ public abstract class BaseActivity extends AppCompatActivity implements
                 .addApi(Awareness.API)
                 .addApi(Places.GEO_DATA_API)
                 .addApi(LocationServices.API)
+                .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
                 .build();
 
         createLocationRequest();
@@ -465,6 +483,28 @@ public abstract class BaseActivity extends AppCompatActivity implements
     }
 
 
+    public void observeState(){
+        observeSignInSubscription = RxFirebaseAuth.observeAuthState(FirebaseAuth.getInstance())
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Subscriber<FirebaseUser>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+
+                    }
+
+                    @Override
+                    public void onNext(FirebaseUser firebaseUser) {
+                        fireBaseAuthication(firebaseUser);
+                    }
+                });
+    }
+
     public Toolbar getToolbar() {
         return toolbar;
     }
@@ -474,4 +514,6 @@ public abstract class BaseActivity extends AppCompatActivity implements
     }
 
     public abstract void onConnected(Location location);
+
+    public abstract void fireBaseAuthication(FirebaseUser firebaseUser);
 }

@@ -77,6 +77,18 @@ public class ValidationUtils {
         }
     }
 
+    public static ValidationResult<String> isValidPassword(String password) {
+        if (password.isEmpty()) {
+            return ValidationResult.failure(null, password);
+        }
+
+        if (password.length() < 3) {
+            return ValidationResult.failure("Password should have 3 or more characters", password);
+        }else{
+            return ValidationResult.success(password);
+        }
+    }
+
     public static ValidationResult<String> isValidTime(String username) {
         if (username.isEmpty()) {
             return ValidationResult.failure(null, "\"Time cannot be blank");

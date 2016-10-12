@@ -1,27 +1,43 @@
 {
   "project_info": {
-    "project_number": "317328080233",
-    "firebase_url": "https://top-africa.firebaseio.com",
-    "project_id": "top-africa",
-    "storage_bucket": "top-africa.appspot.com"
+    "project_number": "110693584916",
+    "firebase_url": "https://top-africa-annuaire-1361.firebaseio.com",
+    "project_id": "top-africa-annuaire-1361",
+    "storage_bucket": "top-africa-annuaire-1361.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:317328080233:android:bdfb8eabe7264be9",
+        "mobilesdk_app_id": "1:110693584916:android:bdfb8eabe7264be9",
         "android_client_info": {
           "package_name": "net.topafrica.Annuaire"
         }
       },
       "oauth_client": [
         {
-          "client_id": "317328080233-jq9f0j8o4n2mi7h6f9v2p6772hkk4ssv.apps.googleusercontent.com",
+          "client_id": "110693584916-p7pbv3mtauuj52g5t7b9pr1nht21tnss.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "net.topafrica.Annuaire",
+            "certificate_hash": "A4296626AA85F466E45A4C16A3087EB372599C4E"
+          }
+        },
+        {
+          "client_id": "110693584916-mr16rjtif78sna0k2rbfucpnkfh0tco0.apps.googleusercontent.com",
+          "client_type": 3
+        },
+        {
+          "client_id": "110693584916-cg6dopno211thfa59iec454rnc48kvg6.apps.googleusercontent.com",
+          "client_type": 3
+        },
+        {
+          "client_id": "110693584916-1q5n238nfk4m6ure83i0h9ilsqk52cnp.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyDmSw7avOAujLEd2hn2pWqrav2QPc3XqoY"
+          "current_key": "AIzaSyD8Sh5gGBX8yvEketczOVurYEbxJpkZTPw"
         }
       ],
       "services": {
@@ -29,8 +45,13 @@
           "status": 1
         },
         "appinvite_service": {
-          "status": 1,
-          "other_platform_oauth_client": []
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "110693584916-mr16rjtif78sna0k2rbfucpnkfh0tco0.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
         },
         "ads_service": {
           "status": 2

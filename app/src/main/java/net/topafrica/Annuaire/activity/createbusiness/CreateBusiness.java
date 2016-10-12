@@ -28,6 +28,7 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RadioGroup;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -47,6 +48,7 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.jakewharton.rxbinding.support.v7.widget.RxSearchView;
+import com.jakewharton.rxbinding.view.RxView;
 import com.jakewharton.rxbinding.widget.RxRadioGroup;
 import com.jakewharton.rxbinding.widget.RxTextView;
 import com.wdullaer.materialdatetimepicker.time.RadialPickerLayout;
@@ -72,6 +74,7 @@ import net.topafrica.Annuaire.rx.DisplayAddressOnViewAction;
 import net.topafrica.Annuaire.rx.ErrorHandler;
 import net.topafrica.Annuaire.rx.FallbackReverseGeocodeObservable;
 import net.topafrica.Annuaire.rx.firebase.RxFirebaseStorage;
+import net.topafrica.Annuaire.uiView.SpineerView;
 
 import java.io.File;
 import java.io.IOException;
@@ -90,6 +93,8 @@ import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.functions.Func1;
+import rx.functions.Func2;
+import rx.functions.Func4;
 import rx.functions.Func5;
 import rx.schedulers.Schedulers;
 
@@ -112,8 +117,16 @@ public class CreateBusiness extends BaseDrawerActivity implements GoogleMap.OnMa
     EditText text_business_type;
 
     @Nullable
+    @Bind(R.id.id_number_of_employee)
+    Spinner spinner;
+
+    @Nullable
     @Bind(R.id.id_card_business_email)
     EditText text_business_email;
+
+    @Nullable
+    @Bind(R.id.id_card_business_sec_email)
+    EditText text_business_sec_email;
 
     @Nullable
     @Bind(R.id.id_card_business_telephone)
@@ -122,6 +135,14 @@ public class CreateBusiness extends BaseDrawerActivity implements GoogleMap.OnMa
     @Nullable
     @Bind(R.id.id_card_business_fax)
     EditText text_business_fax;
+
+    @Nullable
+    @Bind(R.id.id_country_code)
+    TextView text_country_code;
+
+    @Nullable
+    @Bind(R.id.id_fax_code)
+    TextView text_fax_code;
 
     @Nullable
     @Bind(R.id.id_next_btn_step_1)
@@ -166,6 +187,11 @@ public class CreateBusiness extends BaseDrawerActivity implements GoogleMap.OnMa
     @Nullable
     @Bind(R.id.id_mor_mon_opn_time)
     TextView textView_mor_mon_opn_time;
+
+    @Nullable
+    @Bind(R.id.id_next_btn_steps_three)
+    AppCompatButton next_steps_btn_three;
+
     @OnClick(R.id.id_mor_mon_opn_time)
     public void mondayMorningOpenTime(View v){
         Log.e("TIME1","" + "sadfd");
@@ -491,6 +517,7 @@ public class CreateBusiness extends BaseDrawerActivity implements GoogleMap.OnMa
     String picture_url = "";
     String category = "";
     String listing = "Enterprise";
+    String number_of_employee = "1-5";
 
     Day _dayMonday = new Day();
     Day _dayTuesday = new Day();
@@ -730,6 +757,7 @@ public class CreateBusiness extends BaseDrawerActivity implements GoogleMap.OnMa
         super.onStart();
         if (mGoogleApiClient != null)
             mGoogleApiClient.connect();
+        observeState();
     }
 
     @Override
@@ -753,6 +781,8 @@ public class CreateBusiness extends BaseDrawerActivity implements GoogleMap.OnMa
         _subscription.unsubscribe();
         if (_storage_subscription != null)
         _storage_subscription.unsubscribe();
+        if (observeSignInSubscription !=null)
+         observeSignInSubscription.unsubscribe();
     }
 
     @Override
@@ -795,7 +825,7 @@ public class CreateBusiness extends BaseDrawerActivity implements GoogleMap.OnMa
                 .subscribeOn(Schedulers.io())               // use I/O thread to query for addresses
                 .observeOn(AndroidSchedulers.mainThread())
                 .unsubscribeOn(Schedulers.io())
-                .subscribe(new DisplayAddressOnViewAction(country,city,address,cordinate),new ErrorHandler(CreateBusiness.this));
+                .subscribe(new DisplayAddressOnViewAction(country,city,text_country_code,text_fax_code,address,cordinate),new ErrorHandler(CreateBusiness.this));
     }
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -812,13 +842,16 @@ public class CreateBusiness extends BaseDrawerActivity implements GoogleMap.OnMa
         } catch (Exception e) {
             mapsSupported = false;
         }
+        next_steps_btn_three.setEnabled(false);
         pic_camera_image.setTag(1);
         logo_camera_image.setTag(1);
+        setUpSpinner();
         initInstance();
         init();
         setTimeAsZeroIfNoTimeIsSelectedForDay();
         queryFirebase();
         setupObservables1();
+        setupObservables3();
         radioCheckd();
         setupSearchView();
     }
@@ -841,6 +874,15 @@ public class CreateBusiness extends BaseDrawerActivity implements GoogleMap.OnMa
         }
     }
 
+    private void setUpSpinner(){
+       SpineerView spineerView = new SpineerView(CreateBusiness.this, spinner, new SpineerView.OnSpinnerSelected() {
+           @Override
+           public void OnItemSelected(String item) {
+               number_of_employee = item;
+           }
+       });
+        spineerView.openSpinner();
+    }
     private void init(){
         //add ItemDecoration
         searchView.onActionViewExpanded();
@@ -856,15 +898,25 @@ public class CreateBusiness extends BaseDrawerActivity implements GoogleMap.OnMa
             @Override
             public void onItemClick(int position, View v) {
                 AppCompatCheckBox checkBox = (AppCompatCheckBox) v.findViewById(R.id.id_check_box_category);
-                if(checkBox.isChecked())
-                {
-                    CategoryAdapter.SELECTED_POSITION =  position;
-                }
-                else{
-                    CategoryAdapter.SELECTED_POSITION = -1;
+                if(checkBox.isChecked() && CategoryAdapter.COUNT <3){
+                    CategoryAdapter.SELECTED_POSITION.set(position,position);
+                    CategoryAdapter.LAST_POSTION = position;
+                    CategoryAdapter.COUNT++;
+                }else{
+                    if (checkBox.isChecked()){
+                        CategoryAdapter.SELECTED_POSITION.set(CategoryAdapter.LAST_POSTION,-1);
+                        CategoryAdapter.SELECTED_POSITION.set(position,position);
+                        CategoryAdapter.COUNT = 3;
+                    }
+                    else{
+                        CategoryAdapter.SELECTED_POSITION.set(position,-1);
+                        CategoryAdapter.COUNT--;
+                    }
+
+                    CategoryAdapter.LAST_POSTION = position;
                 }
 
-                category = LIST.get(CategoryAdapter.SELECTED_POSITION).getCategoryname();
+                category = LIST.get(CategoryAdapter.SELECTED_POSITION.get(position)).getCategoryname();
                 categoryAdapter.notifyDataSetChanged();
             }
         });
@@ -1014,7 +1066,7 @@ public class CreateBusiness extends BaseDrawerActivity implements GoogleMap.OnMa
     }
 
     private void queryFirebase(){
-        Firebase ref = new Firebase("https://top-africa.firebaseio.com/categories");
+        Firebase ref = new Firebase("https://top-africa-annuaire-1361.firebaseio.com/categories");
 
         Query mQuery = ref.orderByValue();
 //
@@ -1166,6 +1218,19 @@ public class CreateBusiness extends BaseDrawerActivity implements GoogleMap.OnMa
                     }
                 });
 
+        Observable<Boolean> sec_emailObservable = RxTextView.textChanges(text_business_sec_email)
+                .debounce(800, TimeUnit.MILLISECONDS)
+                .observeOn(AndroidSchedulers.mainThread())
+                .map(new Func1<CharSequence, Boolean>() {
+                    @Override
+                    public Boolean call(CharSequence s) {
+                        Log.i(TAG, "validate email: " + s);
+                        ValidationResult result = validateEmail(s.toString());
+                        text_business_sec_email.setError(result.getReason());
+                        return result.isValid();
+                    }
+                });
+
         Observable<Boolean> phoneObservable = RxTextView.textChanges(text_business_phone)
                 .debounce(800, TimeUnit.MILLISECONDS)
                 .observeOn(AndroidSchedulers.mainThread())
@@ -1191,11 +1256,11 @@ public class CreateBusiness extends BaseDrawerActivity implements GoogleMap.OnMa
                 });
 
 
-       _subscription = Observable.combineLatest(nameObservable, categoryObservable, emailObservable, phoneObservable, faxObservable, new Func5<Boolean, Boolean, Boolean, Boolean, Boolean, Boolean>() {
+       _subscription = Observable.combineLatest(nameObservable, categoryObservable, emailObservable, sec_emailObservable, new Func4<Boolean, Boolean, Boolean, Boolean, Boolean>() {
            @Override
-           public Boolean call(Boolean validName, Boolean validType, Boolean validEmail, Boolean validPhone, Boolean validFax) {
+           public Boolean call(Boolean validName, Boolean validType, Boolean validEmail, Boolean validSecEmail) {
 //               Log.i(TAG, "email: " + validEmail + ", username: " + validUsername + ", phone: " + validPhone);
-               return validName && validType && validEmail && validPhone && validFax;
+               return validName && validType && validEmail && validSecEmail;
            }
        }).subscribe(new Action1<Boolean>() {
            @Override
@@ -1204,6 +1269,62 @@ public class CreateBusiness extends BaseDrawerActivity implements GoogleMap.OnMa
            }
        });
     }
+
+    // Validate input data with debounce
+    private void setupObservables3() {
+
+        // Debounce is coming in very handy here.
+        // What I had understood before is that if I use debounce, it will emit event after the give
+        // time period regardless of other events.
+        // But now I am realizing that this is not the case.
+        // Let's say debounce interval is 200 milliseconds. Once an event is emitted, RxJava clock starts
+        // ticking. Once 200 ms is up, debounce operator will emit that event.
+        // One more event comes to debounce and it will start the clock for 200 ms. If another event comes
+        // in 100 ms, debounce operator will reset the clock and start to count 200 ms again.
+        // So let's say if you continue emitting events at 199 ms intervals, this debounce operator
+        // will never emit any event.
+
+        // Also, debounce by default goes on Scheduler thread, so it is important to add observeOn
+        // and observe it on main thread.
+
+        Observable<Boolean> phoneObservable = RxTextView.textChanges(text_business_phone)
+                .debounce(800, TimeUnit.MILLISECONDS)
+                .observeOn(AndroidSchedulers.mainThread())
+                .map(new Func1<CharSequence, Boolean>() {
+                    @Override
+                    public Boolean call(CharSequence s) {
+                        ValidationResult result = validatePhone(s.toString());
+                        text_business_phone.setError(result.getReason());
+                        return result.isValid();
+                    }
+                });
+//
+        Observable<Boolean> faxObservable = RxTextView.textChanges(text_business_fax)
+                .debounce(800, TimeUnit.MILLISECONDS)
+                .observeOn(AndroidSchedulers.mainThread())
+                .map(new Func1<CharSequence, Boolean>() {
+                    @Override
+                    public Boolean call(CharSequence s) {
+                        ValidationResult result = validatePhone(s.toString());
+                        text_business_fax.setError(result.getReason());
+                        return result.isValid();
+                    }
+                });
+
+
+        _subscription = Observable.combineLatest(phoneObservable, faxObservable, new Func2<Boolean, Boolean, Boolean>() {
+            @Override
+            public Boolean call(Boolean validPhone, Boolean validFax) {
+                return validPhone && validFax;
+            }
+        }).subscribe(new Action1<Boolean>() {
+            @Override
+            public void call(Boolean aBoolean) {
+                next_steps_btn_three.setEnabled(aBoolean);
+            }
+        });
+    }
+
 
     private ValidationResult<String> validateEmail(@NonNull String email) {
         return ValidationUtils.isValidEmailAddress(email);
@@ -1234,7 +1355,7 @@ public class CreateBusiness extends BaseDrawerActivity implements GoogleMap.OnMa
     }
 
     private void uploadFiles(){
-        final StorageReference storageRef = FirebaseStorage.getInstance().getReferenceFromUrl("gs://top-africa.appspot.com");
+        final StorageReference storageRef = FirebaseStorage.getInstance().getReferenceFromUrl(AppConstant.FIREBASE_STORAGE_REFRENCE_URL);
 
         _storage_subscription = RxFirebaseStorage.putFile(storageRef.child("images/"+logo_uri.getLastPathSegment()),logo_uri)
                 .subscribeOn(Schedulers.io())
@@ -1308,7 +1429,7 @@ public class CreateBusiness extends BaseDrawerActivity implements GoogleMap.OnMa
             Openhours openhours = new Openhours();
             openhours.setDays(TIMELIST);
             openhours.setZone(1);
-            Firebase ref = new Firebase("https://top-africa.firebaseio.com/businesses");
+            Firebase ref = new Firebase(AppConstant.FIREBASE_DATABSE_REFRENCE_URL+"businesses");
             Businesse businesse = new Businesse();
             businesse.setNumberEmployes("50");
             businesse.setCategory(category);

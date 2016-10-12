@@ -18,6 +18,12 @@
         <item name="android:textSize">14sp</item>
     </style>
 
+    <style name="AppTheme.CardStyle" parent="Theme.AppCompat.Light">
+        <item name="cardCornerRadius">2dp</item>
+        <item name="cardElevation">0dp</item>
+        <item name="cardBackgroundColor">@color/colorAccent</item>
+    </style>
+
     <style name="counterText">
         <item name="android:textColor">@color/pink_500</item>
     </style>

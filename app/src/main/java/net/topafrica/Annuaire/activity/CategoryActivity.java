@@ -184,7 +184,7 @@ public class CategoryActivity extends BaseDrawerActivity {
             type = getIntent().getStringExtra(LandingActivity.KEY);
         }
         showProgress(true);
-        Firebase ref = new Firebase("https://top-africa.firebaseio.com/businesses");
+        Firebase ref = new Firebase("https://top-africa-annuaire-1361.firebaseio.com/businesses");
         Query mQuery = ref.orderByChild("category").equalTo(type);
 
         ChildEventListener listener = new ChildEventListener() {

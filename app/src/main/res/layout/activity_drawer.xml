@@ -22,8 +22,8 @@
             android:layout_gravity="start"
             android:background="#E0E0E0"
             app:headerLayout="@layout/view_global_menu_header"
-            app:itemIconTint="#ffffff"
-            app:itemTextColor="#bebcc2"
+            app:itemIconTint="@color/gray_500"
+            app:itemTextColor="@color/gray_500"
             app:menu="@menu/drawer_menu" />
 
     </android.support.v4.widget.DrawerLayout>

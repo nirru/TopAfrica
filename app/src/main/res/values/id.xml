@@ -42,6 +42,7 @@
     <item type="id" name="id_scroll_view"/>
     <item type="id" name="id_card_business_type"/>
     <item type="id" name="id_card_business_email"/>
+    <item type="id" name="id_card_business_sec_email"/>
     <item type="id" name="id_card_business_telephone"/>
     <item type="id" name="id_card_business_fax"/>
     <item type="id" name="id_include_steps"/>
@@ -115,4 +116,20 @@
     <item type="id" name="id_next_btn_steps_four"/>
     <item type="id" name="id_morning_schdule"/>
     <item type="id" name="id_evening_schdule"/>
+    <item type="id" name="id_email"/>
+    <item type="id" name="id_password"/>
+    <item type="id" name="simple_sign_up"/>
+    <item type="id" name="simple_sign_in"/>
+    <item type="id" name="id_menu_login"/>
+    <item type="id" name="id_menu_logout"/>
+    <item type="id" name="id_number_of_employee"/>
+    <item type="id" name="id_country_code"/>
+    <item type="id" name="id_fax_code"/>
+    <item type="id" name="id_rate_business_image"/>
+    <item type="id" name="id_rate_business_text"/>
+    <item type="id" name="id_leave_comment"/>
+    <item type="id" name="id_comment"/>
+    <item type="id" name="id_cancel"/>
+    <item type="id" name="id_post"/>
+
 </resources>

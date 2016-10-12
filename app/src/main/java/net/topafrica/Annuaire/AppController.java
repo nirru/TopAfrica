@@ -12,8 +12,15 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 
+import com.facebook.FacebookSdk;
 import com.firebase.client.Firebase;
 import com.google.firebase.FirebaseApp;
+import com.twitter.sdk.android.Twitter;
+import com.twitter.sdk.android.core.TwitterAuthConfig;
+import io.fabric.sdk.android.Fabric;
+
+import static net.topafrica.Annuaire.AppConstant.TWITTER_KEY;
+import static net.topafrica.Annuaire.AppConstant.TWITTER_SECRET;
 
 /**
  * Created by ericbasendra on 16/09/16.
@@ -25,8 +32,11 @@ public class AppController extends Application{
     public void onCreate() {
         super.onCreate();
         mInstance = this;
+        TwitterAuthConfig authConfig = new TwitterAuthConfig(TWITTER_KEY, TWITTER_SECRET);
+        Fabric.with(this, new Twitter(authConfig));
         FirebaseApp.initializeApp(this);
         Firebase.setAndroidContext(this);
+        FacebookSdk.sdkInitialize(this);
     }
 
     @Override

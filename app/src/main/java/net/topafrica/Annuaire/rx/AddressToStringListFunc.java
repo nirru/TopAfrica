@@ -2,6 +2,8 @@ package net.topafrica.Annuaire.rx;
 
 import android.location.Address;
 
+import net.topafrica.Annuaire.CountryToPhonePrefix;
+
 import java.util.ArrayList;
 
 import rx.functions.Func1;
@@ -25,6 +27,7 @@ public class AddressToStringListFunc implements Func1<Address, ArrayList<String>
         addressLines.add(detailAddress);
         addressLines.add("" + lat);
         addressLines.add("" + lng);
+        addressLines.add("" + new CountryToPhonePrefix().prefixFor(address.getCountryCode()));
         return addressLines;
     }
 }
